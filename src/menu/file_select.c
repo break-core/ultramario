@@ -306,7 +306,7 @@ static u8 xIcon[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
  * Rotates the background at 180 grades and it's scale.
  * Although the scale is properly applied in the loop function.
  */
-void beh_yellow_background_menu_init(void) {
+void beh_yellow_background_menu_init(void) { // s_istop_init in ultramario\fileselect.c
     gCurrentObject->oFaceAngleYaw = 0x8000;
     gCurrentObject->oMenuButtonScale = 9.0f;
 }
@@ -315,7 +315,7 @@ void beh_yellow_background_menu_init(void) {
  * Yellow Background Menu Loop Action
  * Properly scales the background in the main menu.
  */
-void beh_yellow_background_menu_loop(void) {
+void beh_yellow_background_menu_loop(void) { // s_istop_main in ultramario\fileselect.c
     cur_obj_scale(9.0f);
 }
 
@@ -323,7 +323,7 @@ void beh_yellow_background_menu_loop(void) {
  * Check if a button was clicked.
  * depth = 200.0 for main menu, 22.0 for submenus.
  */
-s32 check_clicked_button(s16 x, s16 y, f32 depth) {
+s32 check_clicked_button(s16 x, s16 y, f32 depth) { // ButtonClickCheck in ultramario\fileselect.c
     f32 a = 52.4213;
     f32 newX = ((f32) x * 160.0) / (a * depth);
     f32 newY = ((f32) y * 120.0) / (a * 3 / 4 * depth);
@@ -341,7 +341,7 @@ s32 check_clicked_button(s16 x, s16 y, f32 depth) {
 /**
  * Grow from main menu, used by selecting files and menus.
  */
-static void bhv_menu_button_growing_from_main_menu(struct Object *button) {
+static void bhv_menu_button_growing_from_main_menu(struct Object *button) { // ClickButtonEvent1 in ultramario\fileselect.c
     if (button->oMenuButtonTimer < 16) {
         button->oFaceAngleYaw += 0x800;
     }
@@ -368,7 +368,7 @@ static void bhv_menu_button_growing_from_main_menu(struct Object *button) {
 /**
  * Shrink back to main menu, used to return back while inside menus.
  */
-static void bhv_menu_button_shrinking_to_main_menu(struct Object *button) {
+static void bhv_menu_button_shrinking_to_main_menu(struct Object *button) { // ClickButtonCancel1 in ultramario\fileselect.c
     if (button->oMenuButtonTimer < 16) {
         button->oFaceAngleYaw -= 0x800;
     }
@@ -395,7 +395,7 @@ static void bhv_menu_button_shrinking_to_main_menu(struct Object *button) {
 /**
  * Grow from submenu, used by selecting a file in the score menu.
  */
-static void bhv_menu_button_growing_from_submenu(struct Object *button) {
+static void bhv_menu_button_growing_from_submenu(struct Object *button) { // ClickButtonEvent2 in ultramario\fileselect.c
     if (button->oMenuButtonTimer < 16) {
         button->oFaceAngleYaw += 0x800;
     }
@@ -420,7 +420,7 @@ static void bhv_menu_button_growing_from_submenu(struct Object *button) {
 /**
  * Shrink back to submenu, used to return back while inside a score save menu.
  */
-static void bhv_menu_button_shrinking_to_submenu(struct Object *button) {
+static void bhv_menu_button_shrinking_to_submenu(struct Object *button) { // ClickButtonCancel2 in ultramario\fileselect.c
     if (button->oMenuButtonTimer < 16) {
         button->oFaceAngleYaw -= 0x800;
     }
@@ -448,7 +448,7 @@ static void bhv_menu_button_shrinking_to_submenu(struct Object *button) {
  * A small increase and decrease in size.
  * Used by failed copy/erase/score operations and sound mode select.
  */
-static void bhv_menu_button_zoom_in_out(struct Object *button) {
+static void bhv_menu_button_zoom_in_out(struct Object *button) { // PushButtonEvent in ultramario\fileselect.c
     if (sCurrentMenuLevel == MENU_LAYER_MAIN) {
         if (button->oMenuButtonTimer < 4) {
             button->oParentRelativePosZ -= 20.0f;
@@ -475,7 +475,7 @@ static void bhv_menu_button_zoom_in_out(struct Object *button) {
  * A small temporary increase in size.
  * Used while selecting a target copy/erase file or yes/no erase confirmation prompt.
  */
-static void bhv_menu_button_zoom_in(struct Object *button) {
+static void bhv_menu_button_zoom_in(struct Object *button) { // ButtonZoomUpEvent in ultramario\fileselect.c
     button->oMenuButtonScale += 0.0022;
     button->oMenuButtonTimer++;
     if (button->oMenuButtonTimer == 10) {
@@ -489,7 +489,7 @@ static void bhv_menu_button_zoom_in(struct Object *button) {
  * Used after selecting a target copy/erase file or
  * yes/no erase confirmation prompt to undo the zoom in.
  */
-static void bhv_menu_button_zoom_out(struct Object *button) {
+static void bhv_menu_button_zoom_out(struct Object *button) { // ButtonZoomDownEvent in ultramario\fileselect.c
     button->oMenuButtonScale -= 0.0022;
     button->oMenuButtonTimer++;
     if (button->oMenuButtonTimer == 10) {
@@ -503,7 +503,7 @@ static void bhv_menu_button_zoom_out(struct Object *button) {
  * Aligns menu buttons so they can stay in their original
  * positions when you choose a button.
  */
-void bhv_menu_button_init(void) {
+void bhv_menu_button_init(void) { // s_button_init in ultramario\fileselect.c
     gCurrentObject->oMenuButtonOrigPosX = gCurrentObject->oParentRelativePosX;
     gCurrentObject->oMenuButtonOrigPosY = gCurrentObject->oParentRelativePosY;
 }
@@ -513,7 +513,7 @@ void bhv_menu_button_init(void) {
  * Handles the functions of the button states and
  * object scale for each button.
  */
-void bhv_menu_button_loop(void) {
+void bhv_menu_button_loop(void) { // s_buttonMove in ultramario\fileselect.c
     switch (gCurrentObject->oMenuButtonState) {
         case MENU_BUTTON_STATE_DEFAULT: // Button state
             gCurrentObject->oMenuButtonOrigPosZ = gCurrentObject->oPosZ;
@@ -559,7 +559,7 @@ void bhv_menu_button_loop(void) {
 /**
  * Handles how to exit the score file menu using button states.
  */
-void exit_score_file_to_score_menu(struct Object *scoreFileButton, s8 scoreButtonID) {
+void exit_score_file_to_score_menu(struct Object *scoreFileButton, s8 scoreButtonID) { // WatchFileScore in ultramario\fileselect.c
     // Begin exit
     if (scoreFileButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN
         && sCursorClickingTimer == 2) {
@@ -582,7 +582,7 @@ void exit_score_file_to_score_menu(struct Object *scoreFileButton, s8 scoreButto
  * Render buttons for the score menu.
  * Also check if the save file exists to render a different Mario button.
  */
-void render_score_menu_buttons(struct Object *scoreButton) {
+void render_score_menu_buttons(struct Object *scoreButton) { // ScoreScene_init in ultramario\fileselect.c
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A] =
@@ -647,7 +647,7 @@ void render_score_menu_buttons(struct Object *scoreButton) {
 /**
  * In the score menu, checks if a button was clicked to play a sound, button state and other functions.
  */
-void check_score_menu_clicked_buttons(struct Object *scoreButton) {
+void check_score_menu_clicked_buttons(struct Object *scoreButton) { // FileScoreScene in ultramario\fileselect.c
     if (scoreButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
         s32 buttonID;
         // Configure score menu button group
@@ -705,7 +705,7 @@ void check_score_menu_clicked_buttons(struct Object *scoreButton) {
  * Render buttons for the copy menu.
  * Also check if the save file exists to render a different Mario button.
  */
-void render_copy_menu_buttons(struct Object *copyButton) {
+void render_copy_menu_buttons(struct Object *copyButton) { // CopyScene_init in ultramario\fileselect.c
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_A] =
@@ -768,7 +768,7 @@ void render_copy_menu_buttons(struct Object *copyButton) {
 /**
  * Copy Menu phase actions that handles what to do when a file button is clicked.
  */
-void copy_action_file_button(struct Object *copyButton, s32 copyFileButtonID) {
+void copy_action_file_button(struct Object *copyButton, s32 copyFileButtonID) { // FileCopyButtonEvent in ultramario\fileselect.c
     switch (copyButton->oMenuButtonActionPhase) {
         case COPY_PHASE_MAIN: // Copy Menu Main Phase
             if (sAllFilesExist == TRUE) { // Don't enable copy if all save files exists
@@ -847,7 +847,7 @@ void copy_action_file_button(struct Object *copyButton, s32 copyFileButtonID) {
 /**
  * In the copy menu, checks if a button was clicked to play a sound, button state and other functions.
  */
-void check_copy_menu_clicked_buttons(struct Object *copyButton) {
+void check_copy_menu_clicked_buttons(struct Object *copyButton) { // FileCopyScene in ultramario\fileselect.c
     if (copyButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
         s32 buttonID;
         // Configure copy menu button group
@@ -894,7 +894,7 @@ void check_copy_menu_clicked_buttons(struct Object *copyButton) {
  * Render buttons for the erase menu.
  * Also check if the save file exists to render a different Mario button.
  */
-void render_erase_menu_buttons(struct Object *eraseButton) {
+void render_erase_menu_buttons(struct Object *eraseButton) { // RemoveScene_init in ultramario\fileselect.c
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_A] =
@@ -953,7 +953,7 @@ void render_erase_menu_buttons(struct Object *eraseButton) {
 /**
  * Erase Menu phase actions that handles what to do when a file button is clicked.
  */
-void erase_action_file_button(struct Object *eraseButton, s32 eraseFileButtonID) {
+void erase_action_file_button(struct Object *eraseButton, s32 eraseFileButtonID) { // FileRemoveButtonEvent in ultramario\fileselect.c
     switch (eraseButton->oMenuButtonActionPhase) {
         case ERASE_PHASE_MAIN: // Erase Menu Main Phase
             if (save_file_exists(eraseFileButtonID - MENU_BUTTON_ERASE_MIN) == TRUE) {
@@ -1004,7 +1004,7 @@ void erase_action_file_button(struct Object *eraseButton, s32 eraseFileButtonID)
 /**
  * In the erase menu, checks if a button was clicked to play a sound, button state and other functions.
  */
-void check_erase_menu_clicked_buttons(struct Object *eraseButton) {
+void check_erase_menu_clicked_buttons(struct Object *eraseButton) { // FileRemoveScene in ultramario\fileselect.c
     if (eraseButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
         s32 buttonID;
         // Configure erase menu button group
@@ -1057,7 +1057,7 @@ void check_erase_menu_clicked_buttons(struct Object *eraseButton) {
 /**
  * Render buttons for the sound mode menu.
  */
-void render_sound_mode_menu_buttons(struct Object *soundModeButton) {
+void render_sound_mode_menu_buttons(struct Object *soundModeButton) { // SoundScene_init in ultramario\fileselect.c
     // Stereo option button
     sMainMenuButtons[MENU_BUTTON_STEREO] = spawn_object_rel_with_rot(
         soundModeButton, MODEL_MAIN_MENU_GENERIC_BUTTON, bhvMenuButton, 533, SOUND_BUTTON_Y, -100, 0, -0x8000, 0);
@@ -1100,7 +1100,7 @@ void render_sound_mode_menu_buttons(struct Object *soundModeButton) {
 /**
  * In the sound mode menu, checks if a button was clicked to change sound mode & button state.
  */
-void check_sound_mode_menu_clicked_buttons(struct Object *soundModeButton) {
+void check_sound_mode_menu_clicked_buttons(struct Object *soundModeButton) { // SoundSelectScene in ultramario\fileselect.c
     if (soundModeButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
         s32 buttonID;
         // Configure sound mode menu button group
@@ -1158,7 +1158,7 @@ void check_sound_mode_menu_clicked_buttons(struct Object *soundModeButton) {
  * Loads a save file selected after it goes into a full screen state
  * retuning sSelectedFileNum to a save value defined in fileNum.
  */
-void load_main_menu_save_file(struct Object *fileButton, s32 fileNum) {
+void load_main_menu_save_file(struct Object *fileButton, s32 fileNum) { // GoToGame in ultramario\fileselect.c
     if (fileButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
         sSelectedFileNum = fileNum;
     }
@@ -1168,7 +1168,7 @@ void load_main_menu_save_file(struct Object *fileButton, s32 fileNum) {
  * Returns from the previous menu back to the main menu using
  * the return button (or sound mode) as source button.
  */
-void return_to_main_menu(s16 prevMenuButtonID, struct Object *sourceButton) {
+void return_to_main_menu(s16 prevMenuButtonID, struct Object *sourceButton) { // GoToFileSelect in ultramario\fileselect.c
     s32 buttonID;
     // If the source button is in default state and the previous menu in full screen,
     // play zoom out sound and shrink previous menu
@@ -1208,7 +1208,7 @@ void return_to_main_menu(s16 prevMenuButtonID, struct Object *sourceButton) {
 /**
  * Loads score menu from the previous menu using "CHECK SCORE" as source button.
  */
-void load_score_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceButton) {
+void load_score_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceButton) { // GoToFileScore in ultramario\fileselect.c
     s32 buttonID;
     // If the source button is in default state and the previous menu in full screen,
     // play zoom out sound and shrink previous menu
@@ -1248,7 +1248,7 @@ void load_score_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceBut
 /**
  * Loads copy menu from the previous menu using "COPY FILE" as source button.
  */
-void load_copy_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceButton) {
+void load_copy_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceButton) { // GoToFileCopy in ultramario\fileselect.c
     s32 buttonID;
     // If the source button is in default state and the previous menu in full screen,
     // play zoom out sound and shrink previous menu
@@ -1288,7 +1288,7 @@ void load_copy_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceButt
 /**
  * Loads erase menu from the previous menu using "ERASE FILE" as source button.
  */
-void load_erase_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceButton) {
+void load_erase_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceButton) { // GoToFileRemove in ultramario\fileselect.c
     s32 buttonID;
     // If the source button is in default state and the previous menu in full screen,
     // play zoom out sound and shrink previous menu
@@ -1332,7 +1332,7 @@ void load_erase_menu_from_submenu(s16 prevMenuButtonID, struct Object *sourceBut
  * checks if a save file exists to render an specific button model for it.
  * Unlike buttons on submenus, these are never hidden or recreated.
  */
-void bhv_menu_button_manager_init(void) {
+void bhv_menu_button_manager_init(void) { // s_fileSelect_init in ultramario\fileselect.c
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A] =
@@ -1404,7 +1404,7 @@ void bhv_menu_button_manager_init(void) {
  * In the main menu, check if a button was clicked to play it's button growing state.
  * Also play a sound and/or render buttons depending of the button ID selected.
  */
-void check_main_menu_clicked_buttons(void) {
+void check_main_menu_clicked_buttons(void) { // FileSelectScene in ultramario\fileselect.c
 #ifdef VERSION_EU
     if (sMainMenuTimer >= 5) {
 #endif
@@ -1512,7 +1512,7 @@ void check_main_menu_clicked_buttons(void) {
  * sSelectedButtonID is MENU_BUTTON_NONE when the file select
  * is loaded, and that checks what buttonID is clicked in the main menu.
  */
-void bhv_menu_button_manager_loop(void) {
+void bhv_menu_button_manager_loop(void) { // s_fileSelect in ultramario\fileselect.c
     switch (sSelectedButtonID) {
         case MENU_BUTTON_NONE:
             check_main_menu_clicked_buttons();
@@ -1634,7 +1634,7 @@ void bhv_menu_button_manager_loop(void) {
  * Cursor function that handles button inputs.
  * If the cursor is clicked, sClickPos uses the same value as sCursorPos.
  */
-void handle_cursor_button_input(void) {
+void handle_cursor_button_input(void) { // ContButton in ultramario\selectmess.c
     // If scoring a file, pressing A just changes the coin score mode.
     if (sSelectedButtonID == MENU_BUTTON_SCORE_FILE_A || sSelectedButtonID == MENU_BUTTON_SCORE_FILE_B
         || sSelectedButtonID == MENU_BUTTON_SCORE_FILE_C
@@ -1675,7 +1675,7 @@ void handle_cursor_button_input(void) {
 /**
  * Cursor function that handles analog stick input and button presses with a function near the end.
  */
-void handle_controller_cursor_input(void) {
+void handle_controller_cursor_input(void) { // CursolMove in ultramario\selectmess.c
     s16 rawStickX = gPlayer3Controller->rawStickX;
     s16 rawStickY = gPlayer3Controller->rawStickY;
 
@@ -1716,7 +1716,7 @@ void handle_controller_cursor_input(void) {
  * and loads it's controller inputs in handle_controller_cursor_input
  * to be usable on the file select.
  */
-void print_menu_cursor(void) {
+void print_menu_cursor(void) { // DrawCursolEvent in ultramario\selectmess.c
     handle_controller_cursor_input();
     create_dl_translation_matrix(MENU_MTX_PUSH, sCursorPos[0] + 160.0f - 5.0, sCursorPos[1] + 120.0f - 25.0, 0.0f);
     // Get the right graphic to use for the cursor.
@@ -1741,7 +1741,7 @@ void print_menu_cursor(void) {
 /**
  * Prints a hud string depending of the hud table list defined with text fade properties.
  */
-void print_hud_lut_string_fade(s8 hudLUT, s16 x, s16 y, const u8 *text) {
+void print_hud_lut_string_fade(s8 hudLUT, s16 x, s16 y, const u8 *text) { // Draw16SpecialFont in ultramario\selectmess.c
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha - sTextFadeAlpha);
     print_hud_lut_string(hudLUT, x, y, text);
@@ -1751,7 +1751,7 @@ void print_hud_lut_string_fade(s8 hudLUT, s16 x, s16 y, const u8 *text) {
 /**
  * Prints a generic white string with text fade properties.
  */
-void print_generic_string_fade(s16 x, s16 y, const u8 *text) {
+void print_generic_string_fade(s16 x, s16 y, const u8 *text) { // Draw8SpecialFont in ultramario\selectmess.c
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha - sTextFadeAlpha);
     print_generic_string(x, y, text);
@@ -1761,7 +1761,7 @@ void print_generic_string_fade(s16 x, s16 y, const u8 *text) {
 /**
  * Updates text fade at the top of a menu.
  */
-s32 update_text_fade_out(void) {
+s32 update_text_fade_out(void) { // SpecialFontAlpha in ultramario\selectmess.c
     if (sFadeOutText == TRUE) {
         sTextFadeAlpha += 50;
         if (sTextFadeAlpha == 250) {
@@ -1780,7 +1780,7 @@ s32 update_text_fade_out(void) {
  * Prints the amount of stars of a save file.
  * If a save doesn't exist, print "NEW" instead.
  */
-void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
+void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) { // DrawFileStarNum in ultramario\selectmess.c
     u8 starCountText[4];
     s8 offset = 0;
     s16 starCount;
@@ -1867,7 +1867,7 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
  * print_main_lang_strings is first called to render the strings for the 4 buttons.
  * Same rule applies for score, copy and erase strings.
  */
-void print_main_menu_strings(void) {
+void print_main_menu_strings(void) { // PrintCourseSelectScene in ultramario\selectmess.c
 #if defined(VERSION_SH) || defined(VERSION_CN)
     // The current sound mode is automatically centered on US and Shindou.
     static s16 sSoundTextX; // TODO: There should be a way to make this match on both US and Shindou.
@@ -2022,7 +2022,7 @@ void score_menu_display_message(s8 messageID) {
 /**
  * Prints score menu strings that shows on the green background menu screen.
  */
-void print_score_menu_strings(void) {
+void print_score_menu_strings(void) { // PrintCourseScoreScene in ultramario\selectmess.c
 #ifdef VERSION_EU
     s16 centeredX;
 #endif
@@ -2120,7 +2120,7 @@ void print_score_menu_strings(void) {
 /**
  * Defines IDs for the top message of the copy menu and displays it if the ID is called in messageID.
  */
-void copy_menu_display_message(s8 messageID) {
+void copy_menu_display_message(s8 messageID) { // ChangeMessageInCopyScene in ultramario\selectmess.c
 #ifdef VERSION_EU
     s16 centeredX;
 #endif
@@ -2171,7 +2171,7 @@ void copy_menu_display_message(s8 messageID) {
 /**
  * Updates messageIDs of the copy menu depending of the copy phase value defined.
  */
-void copy_menu_update_message(void) {
+void copy_menu_update_message(void) { // CopySceneMessageEvent in ultramario\selectmess.c
     switch (sMainMenuButtons[MENU_BUTTON_COPY]->oMenuButtonActionPhase) {
         case COPY_PHASE_MAIN:
             if (sMainMenuTimer == FADEOUT_TIMER) {
@@ -2241,7 +2241,7 @@ void copy_menu_update_message(void) {
 /**
  * Prints copy menu strings that shows on the blue background menu screen.
  */
-void print_copy_menu_strings(void) {
+void print_copy_menu_strings(void) { // PrintFileCopyScene in ultramario\selectmess.c
 #ifdef VERSION_EU
     s16 centeredX;
 #endif
@@ -2332,7 +2332,7 @@ void print_copy_menu_strings(void) {
 /**
  * Prints the "YES NO" prompt and checks if one of the prompts are hovered to do it's functions.
  */
-void print_erase_menu_prompt(s16 x, s16 y) {
+void print_erase_menu_prompt(s16 x, s16 y) { // DrawYesNo in ultramario\selectmess.c
     s16 colorTransTimer = gGlobalTimer * (1 << 12);
 
     s16 cursorX = sCursorPos[0] + CURSOR_X;
@@ -2449,7 +2449,7 @@ void print_erase_menu_prompt(s16 x, s16 y) {
 /**
  * Defines IDs for the top message of the erase menu and displays it if the ID is called in messageID.
  */
-void erase_menu_display_message(s8 messageID) {
+void erase_menu_display_message(s8 messageID) { // ChangeMessageInRemoveScene in ultramario\selectmess.c
 #ifdef VERSION_EU
     s16 centeredX;
 #endif
@@ -2498,7 +2498,7 @@ void erase_menu_display_message(s8 messageID) {
 /**
  * Updates messageIDs of the erase menu depending of the erase phase value defined.
  */
-void erase_menu_update_message(void) {
+void erase_menu_update_message(void) { // RemoveSceneMessageEvent in ultramario\selectmess.c
     switch (sMainMenuButtons[MENU_BUTTON_ERASE]->oMenuButtonActionPhase) {
         case ERASE_PHASE_MAIN:
             if (sMainMenuTimer == FADEOUT_TIMER
@@ -2557,7 +2557,7 @@ void erase_menu_update_message(void) {
 /**
  * Prints erase menu strings that shows on the red background menu screen.
  */
-void print_erase_menu_strings(void) {
+void print_erase_menu_strings(void) { // PrintFileRemoveScene in ultramario\selectmess.c
 #ifdef VERSION_EU
     s16 centeredX;
 #endif
@@ -2627,7 +2627,7 @@ void print_erase_menu_strings(void) {
  *
  * In EU, this function acts like "print_option_mode_menu_strings" because of languages.
  */
-void print_sound_mode_menu_strings(void) {
+void print_sound_mode_menu_strings(void) { // PrintSoundSelect in ultramario\selectmess.c
     s32 mode;
 
 #if defined(VERSION_US) || defined(VERSION_SH) || defined(VERSION_CN)
@@ -2712,7 +2712,7 @@ u8 textStarX[] = { TEXT_STAR_X };
 /**
  * Prints castle secret stars collected in a score menu save file.
  */
-void print_score_file_castle_secret_stars(s8 fileIndex, s16 x, s16 y) {
+void print_score_file_castle_secret_stars(s8 fileIndex, s16 x, s16 y) { // DrawExstarNum in ultramario\selectmess.c
 #ifdef VERSION_CN
     u8 secretStarsText[36];
     u8 textStarX[] = { TEXT_STAR_X };
@@ -2747,7 +2747,7 @@ void print_score_file_castle_secret_stars(s8 fileIndex, s16 x, s16 y) {
 /**
  * Prints course coins collected in a score menu save file.
  */
-void print_score_file_course_coin_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) {
+void print_score_file_course_coin_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) { // Draw88CoinNum in ultramario\selectmess.c
 #ifdef VERSION_CN
     u8 coinScoreText[36];
 #else
@@ -2803,7 +2803,7 @@ void print_score_file_course_coin_score(s8 fileIndex, s16 courseIndex, s16 x, s1
 /**
  * Prints stars collected in a score menu save file.
  */
-void print_score_file_star_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) {
+void print_score_file_star_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) { // DrawCourseStar in ultramario\selectmess.c
     s16 i = 0;
 
 #ifdef VERSION_CN
@@ -2907,7 +2907,7 @@ void print_score_file_star_score(s8 fileIndex, s16 courseIndex, s16 x, s16 y) {
 /**
  * Prints save file score strings that shows when a save file is chosen inside the score menu.
  */
-void print_save_file_scores(s8 fileIndex) {
+void print_save_file_scores(s8 fileIndex) { // PrintFileScore in ultramario\selectmess.c
 #ifndef VERSION_EU
 
     u8 textMario[] = { TEXT_MARIO };
@@ -3052,7 +3052,7 @@ void print_save_file_scores(s8 fileIndex) {
  * Prints file select strings depending on the menu selected.
  * Also checks if all saves exists and defines text and main menu timers.
  */
-static void print_file_select_strings(void) {
+static void print_file_select_strings(void) { // SelectSceneFont in ultramario\selectmess.c
 #ifndef VERSION_CN
     UNUSED u8 filler[8];
 #endif
@@ -3112,7 +3112,7 @@ static void print_file_select_strings(void) {
 /**
  * Geo function that prints file select strings and the cursor.
  */
-Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
+Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) { // SelectSceneMessProc in ultramario\selectmess.c
     if (callContext == GEO_CONTEXT_RENDER) {
         print_file_select_strings();
         print_menu_cursor();

@@ -65,30 +65,30 @@ FORCE_BSS struct MainPoolBlock *sPoolListHeadR;
 
 static struct MainPoolState *gMainPoolState = NULL;
 
-uintptr_t set_segment_base_addr(s32 segment, void *addr) {
+uintptr_t set_segment_base_addr(s32 segment, void *addr) { // SetSegment in ultramario\memory.c
     sSegmentTable[segment] = (uintptr_t) addr & 0x1FFFFFFF;
     return sSegmentTable[segment];
 }
 
-void *get_segment_base_addr(s32 segment) {
+void *get_segment_base_addr(s32 segment) { // GetSegment in ultramario\memory.c
     return (void *) (sSegmentTable[segment] | 0x80000000);
 }
 
 #ifndef NO_SEGMENTED_MEMORY
-void *segmented_to_virtual(const void *addr) {
+void *segmented_to_virtual(const void *addr) { // SegmentToVirtual in ultramario\memory.c
     size_t segment = (uintptr_t) addr >> 24;
     size_t offset = (uintptr_t) addr & 0x00FFFFFF;
 
     return (void *) ((sSegmentTable[segment] + offset) | 0x80000000);
 }
 
-void *virtual_to_segmented(u32 segment, const void *addr) {
+void *virtual_to_segmented(u32 segment, const void *addr) { // VirtualToSegment in ultramario\memory.c
     size_t offset = ((uintptr_t) addr & 0x1FFFFFFF) - sSegmentTable[segment];
 
     return (void *) ((segment << 24) + offset);
 }
 
-void move_segment_table_to_dmem(void) {
+void move_segment_table_to_dmem(void) { // StoreSegments in ultramario\memory.c
     s32 i;
 
     for (i = 0; i < 16; i++) {
@@ -96,15 +96,15 @@ void move_segment_table_to_dmem(void) {
     }
 }
 #else
-void *segmented_to_virtual(const void *addr) {
+void *segmented_to_virtual(const void *addr) { // SegmentToVirtual in ultramario\memory.c
     return (void *) addr;
 }
 
-void *virtual_to_segmented(u32 segment, const void *addr) {
+void *virtual_to_segmented(u32 segment, const void *addr) { // VirtualToSegment in ultramario\memory.c
     return (void *) addr;
 }
 
-void move_segment_table_to_dmem(void) {
+void move_segment_table_to_dmem(void) { // StoreSegments in ultramario\memory.c
 }
 #endif
 
@@ -113,7 +113,7 @@ void move_segment_table_to_dmem(void) {
  * that grow inward from the left and right. It therefore only supports
  * freeing the object that was most recently allocated from a side.
  */
-void main_pool_init(UNUSED_CN void *start, void *end) {
+void main_pool_init(UNUSED_CN void *start, void *end) { // InitFreeZone in ultramario\memory.c
 #if defined(VERSION_CN) && !defined(USE_EXT_RAM)
     sPoolStart = (u8 *) ALIGN16((uintptr_t) &gZBufferEnd) + 16;
 #else
@@ -135,7 +135,7 @@ void main_pool_init(UNUSED_CN void *start, void *end) {
  * specified side of the pool (MEMORY_POOL_LEFT or MEMORY_POOL_RIGHT).
  * If there is not enough space, return NULL.
  */
-void *main_pool_alloc(u32 size, u32 side) {
+void *main_pool_alloc(u32 size, u32 side) { // AllocFreeZone in ultramario\memory.c
     struct MainPoolBlock *newListHead;
     void *addr = NULL;
 
@@ -167,7 +167,7 @@ void *main_pool_alloc(u32 size, u32 side) {
  * newer blocks are freed as well.
  * Return the amount of free space left in the pool.
  */
-u32 main_pool_free(void *addr) {
+u32 main_pool_free(void *addr) { // PurgeFreeZone in ultramario\memory.c
     struct MainPoolBlock *block = (struct MainPoolBlock *) ((u8 *) addr - 16);
     struct MainPoolBlock *oldListHead = (struct MainPoolBlock *) ((u8 *) addr - 16);
 
@@ -195,7 +195,7 @@ u32 main_pool_free(void *addr) {
  * block from the left side.
  * The block does not move.
  */
-void *main_pool_realloc(void *addr, u32 size) {
+void *main_pool_realloc(void *addr, u32 size) { // ResizeFreeZone in ultramario\memory.c
     void *newAddr = NULL;
     struct MainPoolBlock *block = (struct MainPoolBlock *) ((u8 *) addr - 16);
 
@@ -210,7 +210,7 @@ void *main_pool_realloc(void *addr, u32 size) {
  * Return the size of the largest block that can currently be allocated from the
  * pool.
  */
-u32 main_pool_available(void) {
+u32 main_pool_available(void) { // FreeZoneSize in ultramario\memory.c
     return sPoolFreeSpace - 16;
 }
 
@@ -218,7 +218,7 @@ u32 main_pool_available(void) {
  * Push pool state, to be restored later. Return the amount of free space left
  * in the pool.
  */
-u32 main_pool_push_state(void) {
+u32 main_pool_push_state(void) { // LinkFreeZone in ultramario\memory.c
     struct MainPoolState *prevState = gMainPoolState;
     u32 freeSpace = sPoolFreeSpace;
     struct MainPoolBlock *lhead = sPoolListHeadL;
@@ -236,7 +236,7 @@ u32 main_pool_push_state(void) {
  * Restore pool state from a previous call to main_pool_push_state. Return the
  * amount of free space left in the pool.
  */
-u32 main_pool_pop_state(void) {
+u32 main_pool_pop_state(void) { // UnlinkFreeZone in ultramario\memory.c
     sPoolFreeSpace = gMainPoolState->freeSpace;
     sPoolListHeadL = gMainPoolState->listHeadL;
     sPoolListHeadR = gMainPoolState->listHeadR;
@@ -248,7 +248,7 @@ u32 main_pool_pop_state(void) {
  * Perform a DMA read from ROM. The transfer is split into 4KB blocks, and this
  * function blocks until completion.
  */
-static void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
+static void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) { // ReadBlock in ultramario\memory.c
     u32 size = ALIGN16(srcEnd - srcStart);
 
     osInvalDCache(dest, size);
@@ -269,7 +269,7 @@ static void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
  * Perform a DMA read from ROM, allocating space in the memory pool to write to.
  * Return the destination address.
  */
-static void *dynamic_dma_read(u8 *srcStart, u8 *srcEnd, u32 side) {
+static void *dynamic_dma_read(u8 *srcStart, u8 *srcEnd, u32 side) { // LoadData in ultramario\memory.c
     void *dest;
     u32 size = ALIGN16(srcEnd - srcStart);
 
@@ -285,11 +285,11 @@ static void *dynamic_dma_read(u8 *srcStart, u8 *srcEnd, u32 side) {
  * Load data from ROM into a newly allocated block, and set the segment base
  * address to this block.
  */
-void *load_segment(s32 segment, u8 *srcStart, u8 *srcEnd, u32 side) {
+void *load_segment(s32 segment, u8 *srcStart, u8 *srcEnd, u32 side) { // LoadSegment in ultramario\memory.c
     void *addr = dynamic_dma_read(srcStart, srcEnd, side);
 
     if (addr != NULL) {
-        set_segment_base_addr(segment, addr);
+        set_segment_base_addr(segment, addr); 
     }
     return addr;
 }
@@ -300,7 +300,7 @@ void *load_segment(s32 segment, u8 *srcStart, u8 *srcEnd, u32 side) {
  * If this block is not large enough to hold the ROM data, or that portion
  * of the pool is already allocated, return NULL.
  */
-void *load_to_fixed_pool_addr(u8 *destAddr, u8 *srcStart, u8 *srcEnd) {
+void *load_to_fixed_pool_addr(u8 *destAddr, u8 *srcStart, u8 *srcEnd) { // LoadProgram in ultramario\memory.c
     void *dest = NULL;
     u32 srcSize = ALIGN16(srcEnd - srcStart);
     u32 destSize = ALIGN16((u8 *) sPoolListHeadR - destAddr);
@@ -324,7 +324,7 @@ void *load_to_fixed_pool_addr(u8 *destAddr, u8 *srcStart, u8 *srcEnd) {
  * pointer to an allocated buffer holding the decompressed data. Set the
  * base address of segment to this address.
  */
-void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
+void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) { // LoadCompressed in ultramario\memory.c
     void *dest = NULL;
 
     u32 compSize = ALIGN16(srcEnd - srcStart);
@@ -350,7 +350,7 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
     return dest;
 }
 
-void *load_segment_decompress_heap(u32 segment, u8 *srcStart, u8 *srcEnd) {
+void *load_segment_decompress_heap(u32 segment, u8 *srcStart, u8 *srcEnd) { // LoadPressTexture in ultramario\memory.c
     UNUSED void *dest = NULL;
     u32 compSize = ALIGN16(srcEnd - srcStart);
     u8 *compressed = main_pool_alloc(compSize, MEMORY_POOL_RIGHT);
@@ -366,7 +366,7 @@ void *load_segment_decompress_heap(u32 segment, u8 *srcStart, u8 *srcEnd) {
     return gDecompressionHeap;
 }
 
-void load_engine_code_segment(void) {
+void load_engine_code_segment(void) { // LoadUserLibrary in ultramario\memory.c
     void *startAddr = (void *) SEG_ENGINE;
     u32 totalSize = SEG_FRAMEBUFFERS - SEG_ENGINE;
     UNUSED u32 alignedSize = ALIGN16(_engineSegmentRomEnd - _engineSegmentRomStart);
@@ -384,7 +384,7 @@ void load_engine_code_segment(void) {
  * support freeing allocated memory.
  * Return NULL if there is not enough space in the main pool.
  */
-struct AllocOnlyPool *alloc_only_pool_init(u32 size, u32 side) {
+struct AllocOnlyPool *alloc_only_pool_init(u32 size, u32 side) { // InitArena in ultramario\memory.c
     void *addr;
     struct AllocOnlyPool *subPool = NULL;
 
@@ -404,7 +404,7 @@ struct AllocOnlyPool *alloc_only_pool_init(u32 size, u32 side) {
  * Allocate from an allocation-only pool.
  * Return NULL if there is not enough space.
  */
-void *alloc_only_pool_alloc(struct AllocOnlyPool *pool, s32 size) {
+void *alloc_only_pool_alloc(struct AllocOnlyPool *pool, s32 size) { // AllocArena in ultramario\memory.c
     void *addr = NULL;
 
     size = ALIGN4(size);
@@ -422,7 +422,7 @@ void *alloc_only_pool_alloc(struct AllocOnlyPool *pool, s32 size) {
  * from the left end of the main pool.
  * The pool does not move.
  */
-struct AllocOnlyPool *alloc_only_pool_resize(struct AllocOnlyPool *pool, u32 size) {
+struct AllocOnlyPool *alloc_only_pool_resize(struct AllocOnlyPool *pool, u32 size) { // ResizeArena in ultramario\memory.c
     struct AllocOnlyPool *newPool;
 
     size = ALIGN4(size);
@@ -438,7 +438,7 @@ struct AllocOnlyPool *alloc_only_pool_resize(struct AllocOnlyPool *pool, u32 siz
  * order for allocation/freeing.
  * Return NULL if there is not enough space in the main pool.
  */
-struct MemoryPool *mem_pool_init(u32 size, u32 side) {
+struct MemoryPool *mem_pool_init(u32 size, u32 side) { // InitHeap in ultramario\memory.c
     void *addr;
     struct MemoryBlock *block;
     struct MemoryPool *pool = NULL;
@@ -462,7 +462,7 @@ struct MemoryPool *mem_pool_init(u32 size, u32 side) {
 /**
  * Allocate from a memory pool. Return NULL if there is not enough space.
  */
-void *mem_pool_alloc(struct MemoryPool *pool, u32 size) {
+void *mem_pool_alloc(struct MemoryPool *pool, u32 size) { // AllocHeap in ultramario\memory.c
     struct MemoryBlock *freeBlock = &pool->freeList;
     void *addr = NULL;
 
@@ -489,7 +489,7 @@ void *mem_pool_alloc(struct MemoryPool *pool, u32 size) {
 /**
  * Free a block that was allocated using mem_pool_alloc.
  */
-BAD_RETURN(s32) mem_pool_free(struct MemoryPool *pool, void *addr) {
+BAD_RETURN(s32) mem_pool_free(struct MemoryPool *pool, void *addr) { // FreeHeap in ultramario\memory.c
     struct MemoryBlock *block = (struct MemoryBlock *) ((u8 *) addr - sizeof(struct MemoryBlock));
     struct MemoryBlock *freeList = pool->freeList.next;
 
@@ -532,7 +532,7 @@ BAD_RETURN(s32) mem_pool_free(struct MemoryPool *pool, void *addr) {
     // nothing is returned, but must have non-void return type for render_text_labels to match on iQue
 }
 
-void *alloc_display_list(u32 size) {
+void *alloc_display_list(u32 size) { // AllocDynamic in ultramario\memory.c
     void *ptr = NULL;
 
     size = ALIGN8(size);
@@ -544,7 +544,7 @@ void *alloc_display_list(u32 size) {
     return ptr;
 }
 
-static struct DmaTable *load_dma_table_address(u8 *srcAddr) {
+static struct DmaTable *load_dma_table_address(u8 *srcAddr) { // LoadPartitionTable in ultramario\memory.c
     struct DmaTable *table = dynamic_dma_read(srcAddr, srcAddr + sizeof(u32),
                                                              MEMORY_POOL_LEFT);
     u32 size = table->count * sizeof(struct OffsetSizePair) +
@@ -556,7 +556,7 @@ static struct DmaTable *load_dma_table_address(u8 *srcAddr) {
     return table;
 }
 
-void setup_dma_table_list(struct DmaHandlerList *list, void *srcAddr, void *buffer) {
+void setup_dma_table_list(struct DmaHandlerList *list, void *srcAddr, void *buffer) { // InitPartial in ultramario\memory.c
     if (srcAddr != NULL) {
         list->dmaTable = load_dma_table_address(srcAddr);
     }
@@ -564,7 +564,7 @@ void setup_dma_table_list(struct DmaHandlerList *list, void *srcAddr, void *buff
     list->bufTarget = buffer;
 }
 
-s32 load_patchable_table(struct DmaHandlerList *list, s32 index) {
+s32 load_patchable_table(struct DmaHandlerList *list, s32 index) { // ReadPartialData in ultramario\memory.c
     s32 ret = FALSE;
     struct DmaTable *table = list->dmaTable;
 

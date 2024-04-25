@@ -88,7 +88,7 @@ const char *gNoControllerMsg[] = {
 };
 #endif
 
-void override_viewport_and_clip(Vp *a, Vp *b, u8 c, u8 d, u8 e) {
+void override_viewport_and_clip(Vp *a, Vp *b, u8 c, u8 d, u8 e) { // SnSetViewPort in ultramario\scene.c
     u16 sp6 = ((c >> 3) << 11) | ((d >> 3) << 6) | ((e >> 3) << 1) | 1;
 
     gFBSetColor = (sp6 << 16) | sp6;
@@ -96,7 +96,7 @@ void override_viewport_and_clip(Vp *a, Vp *b, u8 c, u8 d, u8 e) {
     D_8032CE78 = b;
 }
 
-void set_warp_transition_rgb(u8 red, u8 green, u8 blue) {
+void set_warp_transition_rgb(u8 red, u8 green, u8 blue) { // SnSetBlankColor in ultramario\scene.c
     u16 warpTransitionRGBA16 = ((red >> 3) << 11) | ((green >> 3) << 6) | ((blue >> 3) << 1) | 1;
 
     gWarpTransFBSetColor = (warpTransitionRGBA16 << 16) | warpTransitionRGBA16;
@@ -105,7 +105,7 @@ void set_warp_transition_rgb(u8 red, u8 green, u8 blue) {
     gWarpTransBlue = blue;
 }
 
-void print_intro_text(void) {
+void print_intro_text(void) { // SnDisplayDemoMessage in ultramario\scene.c
 #ifdef VERSION_CN
     u8 sp18[] = { 0xB0, 0x00 }; // TODO: iQue colorful text
 #endif
@@ -134,7 +134,7 @@ void print_intro_text(void) {
     }
 }
 
-u32 get_mario_spawn_type(struct Object *o) {
+u32 get_mario_spawn_type(struct Object *o) { // SnGetPortType in ultramario\scene.c
     s32 i;
     const BehaviorScript *behavior = virtual_to_segmented(0x13, o->behavior);
 
@@ -146,7 +146,7 @@ u32 get_mario_spawn_type(struct Object *o) {
     return 0;
 }
 
-struct ObjectWarpNode *area_get_warp_node(u8 id) {
+struct ObjectWarpNode *area_get_warp_node(u8 id) { // SnGetPortPtr in ultramario\scene.c
     struct ObjectWarpNode *node = NULL;
 
     for (node = gCurrentArea->warpNodes; node != NULL; node = node->next) {
@@ -157,13 +157,13 @@ struct ObjectWarpNode *area_get_warp_node(u8 id) {
     return node;
 }
 
-struct ObjectWarpNode *area_get_warp_node_from_params(struct Object *o) {
+struct ObjectWarpNode *area_get_warp_node_from_params(struct Object *o) { // SnFindPortPtr in ultramario\scene.c
     u8 id = (o->oBhvParams & 0x00FF0000) >> 16;
 
     return area_get_warp_node(id);
 }
 
-void load_obj_warp_nodes(void) {
+void load_obj_warp_nodes(void) { // InitPorts in ultramario\scene.c
     struct ObjectWarpNode *sp24;
     struct Object *sp20 = (struct Object *) gObjParentGraphNode.children;
 
@@ -180,7 +180,7 @@ void load_obj_warp_nodes(void) {
              != (struct Object *) gObjParentGraphNode.children);
 }
 
-void clear_areas(void) {
+void clear_areas(void) { // SnInitSceneInfo in ultramario\scene.c
     s32 i;
 
     gCurrentArea = NULL;
@@ -211,7 +211,7 @@ void clear_areas(void) {
     }
 }
 
-void clear_area_graph_nodes(void) {
+void clear_area_graph_nodes(void) { // SnDisposeScene in ultramario\scene.c
     s32 i;
 
     if (gCurrentArea != NULL) {
@@ -228,7 +228,7 @@ void clear_area_graph_nodes(void) {
     }
 }
 
-void load_area(s32 index) {
+void load_area(s32 index) { // SnOpenScene in ultramario\scene.c
     if (gCurrentArea == NULL && gAreaData[index].unk04 != NULL) {
         gCurrentArea = &gAreaData[index];
         gCurrAreaIndex = gCurrentArea->index;
@@ -247,7 +247,7 @@ void load_area(s32 index) {
     }
 }
 
-void unload_area(void) {
+void unload_area(void) { // SnCloseScene in ultramario\scene.c
     if (gCurrentArea != NULL) {
         unload_objects_from_area(0, gCurrentArea->index);
         geo_call_global_function_nodes(&gCurrentArea->unk04->node, GEO_CONTEXT_AREA_UNLOAD);
@@ -258,7 +258,7 @@ void unload_area(void) {
     }
 }
 
-void load_mario_area(void) {
+void load_mario_area(void) { // SnEnterPlayer in ultramario\scene.c
     stop_sounds_in_continuous_banks();
     load_area(gMarioSpawnInfo->areaIndex);
 
@@ -268,7 +268,7 @@ void load_mario_area(void) {
     }
 }
 
-void unload_mario_area(void) {
+void unload_mario_area(void) { // SnExitPlayer in ultramario\scene.c
     if (gCurrentArea != NULL && (gCurrentArea->flags & 0x01)) {
         unload_objects_from_area(0, gMarioSpawnInfo->activeAreaIndex);
 
@@ -279,7 +279,7 @@ void unload_mario_area(void) {
     }
 }
 
-void change_area(s32 index) {
+void change_area(s32 index) { // SnChangeScene in ultramario\scene.c
     s32 areaFlags = gCurrentArea->flags;
 
     if (gCurrAreaIndex != index) {
@@ -295,7 +295,7 @@ void change_area(s32 index) {
     }
 }
 
-void area_update_objects(void) {
+void area_update_objects(void) { // SnExecuteStrategy in ultramario\scene.c
     gAreaUpdateCounter++;
     update_objects(0);
 }
@@ -304,7 +304,7 @@ void area_update_objects(void) {
  * Sets up the information needed to play a warp transition, including the
  * transition type, time in frames, and the RGB color that will fill the screen.
  */
-void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue) {
+void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue) { // SnStartFader in ultramario\scene.c
     gWarpTransition.isActive = TRUE;
     gWarpTransition.type = transType;
     gWarpTransition.time = time;
@@ -360,12 +360,12 @@ void play_transition(s16 transType, s16 time, u8 red, u8 green, u8 blue) {
  * transition type, time in frames, and the RGB color that will fill the screen.
  * The transition will play only after a number of frames specified by 'delay'
  */
-void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 blue, s16 delay) {
+void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 blue, s16 delay) { // SnDelayFader in ultramario\scene.c
     gWarpTransDelay = delay; // Number of frames to delay playing the transition.
     play_transition(transType, time, red, green, blue);
 }
 
-void render_game(void) {
+void render_game(void) { // SnDrawScreen in ultramario\scene.c
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
 

@@ -45,7 +45,7 @@ static s16 sPlayMarioGameOver = TRUE;
  * This function returns the level ID from the first byte of a demo file.
  * It also returns the level ID from intro_regular (file select or level select menu)
  */
-s32 run_level_id_or_demo(s32 level) {
+s32 run_level_id_or_demo(s32 level) { // CheckAutoDemo in ultramario\title.c
     gCurrDemoInput = NULL;
 
     if (level == LEVEL_NONE) {
@@ -83,7 +83,7 @@ s32 run_level_id_or_demo(s32 level) {
  * count if an input was received. signals the stage to be started
  * or the level select to be exited if start or the quit combo is pressed.
  */
-s16 intro_level_select(void) {
+s16 intro_level_select(void) { // DoDebugSelect in ultramario\title.c
     s32 stageChanged = FALSE;
 
     // perform the ID updates per each button press.
@@ -149,7 +149,7 @@ s16 intro_level_select(void) {
 /**
  * Regular intro function that handles Mario's greeting voice and game start.
  */
-s32 intro_regular(void) {
+s32 intro_regular(void) { // DoModeSelect in ultramario\title.c
     s32 level = LEVEL_NONE;
 
 #ifndef VERSION_JP
@@ -188,7 +188,7 @@ s32 intro_regular(void) {
 /**
  * Game over intro function that handles Mario's game over voice and game start.
  */
-s32 intro_game_over(void) {
+s32 intro_game_over(void) { // DoGmOverSelect in ultramario\title.c
     s32 level = LEVEL_NONE;
 
 #ifndef VERSION_JP
@@ -218,7 +218,7 @@ s32 intro_game_over(void) {
 /**
  * Plays the casual "It's a me mario" when the game stars.
  */
-s32 intro_play_its_a_me_mario(void) {
+s32 intro_play_its_a_me_mario(void) { // DoNintendoLogo in ultramario\title.c
     set_background_music(0, SEQ_SOUND_PLAYER, 0);
     play_sound(SOUND_MENU_COIN_ITS_A_ME_MARIO, gGlobalSoundSource);
     return 1;
@@ -228,7 +228,7 @@ s32 intro_play_its_a_me_mario(void) {
  * Update intro functions to handle title screen actions.
  * Returns a level ID after their criteria is met.
  */
-s32 lvl_intro_update(s16 arg, UNUSED s32 unusedArg) {
+s32 lvl_intro_update(s16 arg, UNUSED s32 unusedArg) { // TitleProcess in ultramario\title.c
     s32 retVar;
 
     switch (arg) {

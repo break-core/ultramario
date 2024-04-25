@@ -13,7 +13,7 @@
  * appears when printing things such as "PRESS START".
  */
 
-struct TextLabel {
+struct TextLabel { // PString
     u32 x;
     u32 y;
     s16 length;
@@ -30,7 +30,7 @@ s16 sTextLabelsCount = 0;
 /**
  * Returns n to the exponent power, only for non-negative powers.
  */
-s32 int_pow(s32 n, s32 exponent) {
+s32 int_pow(s32 n, s32 exponent) { // PowTen in ultramario\dprint.c
     s32 result = 1;
     s32 i;
 
@@ -45,7 +45,7 @@ s32 int_pow(s32 n, s32 exponent) {
  * Formats an integer n for print by fitting it to width, prefixing with a negative,
  * and converting the base.
  */
-void format_integer(s32 n, s32 base, char *dest, s32 *totalLength, u8 width, s8 zeroPad) {
+void format_integer(s32 n, s32 base, char *dest, s32 *totalLength, u8 width, s8 zeroPad) { // ChangeValueString in ultramario\dprint.c
     u32 powBase;
     s32 numDigits = 0;
     s32 i;
@@ -123,7 +123,7 @@ void format_integer(s32 n, s32 base, char *dest, s32 *totalLength, u8 width, s8 
  * Additionally, this determines if a number should be zero-padded,
  * writing to 'zeroPad'.
  */
-void parse_width_field(const char *str, s32 *srcIndex, u8 *width, s8 *zeroPad) {
+void parse_width_field(const char *str, s32 *srcIndex, u8 *width, s8 *zeroPad) { // CheckGirder in ultramario\dprint.c
     s8 digits[12]; // unknown length
     s8 digitsLen = 0;
     s16 i;
@@ -219,7 +219,7 @@ void print_text_fmt_int(s32 x, s32 y, const char *str, s32 n) {
 /**
  * Prints text in the colorful lettering at given X, Y coordinates.
  */
-void print_text(s32 x, s32 y, const char *str) {
+void print_text(s32 x, s32 y, const char *str) { // dprintf in ultramario\dprint.c
     char c = 0;
     s32 length = 0;
     s32 srcIndex = 0;
@@ -250,7 +250,7 @@ void print_text(s32 x, s32 y, const char *str) {
 /**
  * Prints text in the colorful lettering centered at given X, Y coordinates.
  */
-void print_text_centered(s32 x, s32 y, const char *str) {
+void print_text_centered(s32 x, s32 y, const char *str) { // dcprintf in ultramario\dprint.c
     char c = 0;
     UNUSED s8 unused1 = 0;
     UNUSED s32 unused2 = 0;
@@ -296,7 +296,7 @@ void print_text_centered(s32 x, s32 y, const char *str) {
 /**
  * Converts a char into the proper colorful glyph for the char.
  */
-s8 char_to_glyph_index(char c) {
+s8 char_to_glyph_index(char c) { // CharacterCheck in ultramario\dprint.c
     if (c >= 'A' && c <= 'Z') {
         return c - 55;
     }
@@ -363,7 +363,7 @@ s8 char_to_glyph_index(char c) {
 /**
  * Adds an individual glyph to be rendered.
  */
-void add_glyph_texture(s8 glyphIndex) {
+void add_glyph_texture(s8 glyphIndex) { // DrawMessageFont in ultramario\dprint.c
     const u8 *const *glyphs = segmented_to_virtual(main_hud_lut);
 
     gDPPipeSync(gDisplayListHead++);
@@ -379,7 +379,7 @@ void add_glyph_texture(s8 glyphIndex) {
 /**
  * Clips textrect into the boundaries defined.
  */
-void clip_to_bounds(s32 *x, s32 *y) {
+void clip_to_bounds(s32 *x, s32 *y) { // PosXYCheck in ultramario\dprint.c
     if (*x < TEXRECT_MIN_X) {
         *x = TEXRECT_MIN_X;
     }
@@ -402,7 +402,7 @@ void clip_to_bounds(s32 *x, s32 *y) {
  * Renders the glyph that's set at the given position.
  */
 #ifdef VERSION_CN
-void render_textrect(s32 x, s32 y, s32 pos, s32 width) {
+void render_textrect(s32 x, s32 y, s32 pos, s32 width) { // DrawFontToFrame in ultramario\dprint.c
     s32 rectBaseX = x + pos * width;
 #else
 void render_textrect(s32 x, s32 y, s32 pos) {
@@ -426,7 +426,7 @@ void render_textrect(s32 x, s32 y, s32 pos) {
  * Renders the text in sTextLabels on screen at the proper locations by iterating
  * a for loop.
  */
-void render_text_labels(void) {
+void render_text_labels(void) { // DrawMessage in ultramario\dprint.c
     s32 i;
     s32 j;
     s8 glyphIndex;

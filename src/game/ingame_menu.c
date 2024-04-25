@@ -130,7 +130,7 @@ u8 gMenuHoldKeyIndex = 0;
 u8 gMenuHoldKeyTimer = 0;
 s32 gDialogResponse = DIALOG_RESPONSE_NONE;
 
-void create_dl_identity_matrix(void) {
+void create_dl_identity_matrix(void) { // iwa_LoadImatrix in ultramario\drawfont.c
     Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
 
     if (matrix == NULL) {
@@ -150,7 +150,7 @@ void create_dl_identity_matrix(void) {
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
 }
 
-void create_dl_translation_matrix(s8 pushOp, f32 x, f32 y, f32 z) {
+void create_dl_translation_matrix(s8 pushOp, f32 x, f32 y, f32 z) { // iTranslate in ultramario\drawfont.c
     Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
 
     if (matrix == NULL) {
@@ -168,7 +168,7 @@ void create_dl_translation_matrix(s8 pushOp, f32 x, f32 y, f32 z) {
     }
 }
 
-void create_dl_rotation_matrix(s8 pushOp, f32 a, f32 x, f32 y, f32 z) {
+void create_dl_rotation_matrix(s8 pushOp, f32 a, f32 x, f32 y, f32 z) { // iRotate in ultramario\drawfont.c
     Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
 
     if (matrix == NULL) {
@@ -186,7 +186,7 @@ void create_dl_rotation_matrix(s8 pushOp, f32 a, f32 x, f32 y, f32 z) {
     }
 }
 
-void create_dl_scale_matrix(s8 pushOp, f32 x, f32 y, f32 z) {
+void create_dl_scale_matrix(s8 pushOp, f32 x, f32 y, f32 z) { // iScale in ultramario\drawfont.c
     Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
 
     if (matrix == NULL) {
@@ -204,7 +204,7 @@ void create_dl_scale_matrix(s8 pushOp, f32 x, f32 y, f32 z) {
     }
 }
 
-void create_dl_ortho_matrix(void) {
+void create_dl_ortho_matrix(void) { // MakeSelectProjection in ultramario\drawfont.c
     Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
 
     if (matrix == NULL) {
@@ -251,7 +251,7 @@ static u8 *alloc_ia8_text_from_i1(u8 *in) {
     return out;
 }
 #else
-static u8 *alloc_ia8_text_from_i1(u16 *in, s16 width, s16 height) {
+static u8 *alloc_ia8_text_from_i1(u16 *in, s16 width, s16 height) { // ImageDefrost in ultramario\drawfont.c
     s32 inPos;
     u16 bitMask;
     u8 *out;
@@ -364,7 +364,7 @@ void render_uppercase_diacritic(s16 *xPos, s16 *yPos, u8 letter, u8 diacritic) {
 #endif // VERSION_EU
 
 #ifdef VERSION_CN
-void render_generic_char_cn(u16 c) {
+void render_generic_char_cn(u16 c) { // DrawMessageTexture in ultramario\drawmain.c
     void **fontLUT = segmented_to_virtual(main_font_lut);
     void *packedTexture = segmented_to_virtual(fontLUT[c]);
     void *unpackedTexture = alloc_ia8_text_from_i1(packedTexture);
@@ -392,7 +392,7 @@ enum MultiStringIDs { STRING_THE, STRING_YOU };
  * 1: 'you'
  */
 #if defined(VERSION_US) || defined(VERSION_CN)
-void render_multi_text_string(s8 multiTextID)
+void render_multi_text_string(s8 multiTextID) // Draw8bitStrings in ultramario\drawfont.c
 #elif defined(VERSION_EU)
 void render_multi_text_string(s16 *xPos, s16 *yPos, s8 multiTextID)
 #endif
@@ -437,7 +437,7 @@ void render_multi_text_string(s16 *xPos, s16 *yPos, s8 multiTextID)
  * Prints a generic white string.
  * In JP/EU a IA1 texture is used but in US a IA4 texture is used.
  */
-void print_generic_string(s16 x, s16 y, const u8 *str) {
+void print_generic_string(s16 x, s16 y, const u8 *str) { // Draw8bitFont in ultramario\drawfont.c
     UNUSED s8 mark = DIALOG_MARK_NONE; // unused in EU
     s32 strPos = 0;
     u8 lineNum = 1;
@@ -633,7 +633,7 @@ void print_hud_char_umlaut(s16 x, s16 y, u8 chr) {
 /**
  * Prints a hud string depending of the hud table list defined.
  */
-void print_hud_lut_string(s8 hudLUT, s16 x, s16 y, const u8 *str) {
+void print_hud_lut_string(s8 hudLUT, s16 x, s16 y, const u8 *str) { // Draw16bitFont in ultramario\drawfont.c
     s32 strPos = 0;
     void **hudLUT1 = segmented_to_virtual(menu_hud_lut); // Japanese Menu HUD Color font
     void **hudLUT2 = segmented_to_virtual(main_hud_lut); // 0-9 A-Z HUD Color Font
@@ -739,7 +739,7 @@ void print_menu_char_umlaut(s16 x, s16 y, u8 chr) {
 }
 #endif
 
-void print_menu_generic_string(s16 x, s16 y, const u8 *str) {
+void print_menu_generic_string(s16 x, s16 y, const u8 *str) { // DrawS88Font in ultramario\drawfont.c
     UNUSED s8 mark = DIALOG_MARK_NONE; // unused in EU
     s32 strPos = 0;
     u32 curX = x;
@@ -800,7 +800,7 @@ void print_menu_generic_string(s16 x, s16 y, const u8 *str) {
     }
 }
 
-void print_credits_string(s16 x, s16 y, const u8 *str) {
+void print_credits_string(s16 x, s16 y, const u8 *str) { // DrawS88ColFont in ultramario\drawfont.c
     s32 strPos = 0;
     void **fontLUT = segmented_to_virtual(main_credits_font_lut);
     u32 curX = x;
@@ -831,6 +831,8 @@ void print_credits_string(s16 x, s16 y, const u8 *str) {
         strPos++;
     }
 }
+
+// ANYTHING PAST THIS POINT IS NOT FROM DRAWFONT.C
 
 void handle_menu_scrolling(s8 scrollDirection, s8 *currentIndex, s8 minIndex, s8 maxIndex) {
     u8 index = 0;
@@ -2159,16 +2161,16 @@ void set_menu_mode(s16 mode) {
     }
 }
 
-void reset_cutscene_msg_fade(void) {
+void reset_cutscene_msg_fade(void) { // ClearEndingMessage in ultramario\endingmess.c
     gCutsceneMsgFade = 0;
 }
 
-void dl_rgba16_begin_cutscene_msg_fade(void) {
+void dl_rgba16_begin_cutscene_msg_fade(void) { // BeginEndingMessage in ultramario\endingmess.c
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gCutsceneMsgFade);
 }
 
-void dl_rgba16_stop_cutscene_msg_fade(void) {
+void dl_rgba16_stop_cutscene_msg_fade(void) { // EndEndingMessage in ultramario\endingmess.c
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
 
     if (gCutsceneMsgFade < 250) {
@@ -2178,7 +2180,7 @@ void dl_rgba16_stop_cutscene_msg_fade(void) {
     }
 }
 
-u8 ascii_to_credits_char(u8 c) {
+u8 ascii_to_credits_char(u8 c) { // ConvAscii in ultramario\endingmess.c ?
     if (c >= 'A' && c <= 'Z') {
         return (c - ('A' - 0xA));
     }
@@ -2210,7 +2212,7 @@ u8 ascii_to_credits_char(u8 c) {
     return GLOBAL_CHAR_SPACE;
 }
 
-void print_credits_str_ascii(s16 x, s16 y, const char *str) {
+void print_credits_str_ascii(s16 x, s16 y, const char *str) { // EndingMessage in ultramario\endingmess.c
     s32 pos = 0;
     u8 c = str[pos];
     u8 creditStr[100];
@@ -2225,7 +2227,7 @@ void print_credits_str_ascii(s16 x, s16 y, const char *str) {
     print_credits_string(x, y, creditStr);
 }
 
-void set_cutscene_message(s16 xOffset, s16 yOffset, s16 msgIndex, s16 msgDuration) {
+void set_cutscene_message(s16 xOffset, s16 yOffset, s16 msgIndex, s16 msgDuration) { // CallEndingDemoMessage in ultramario\endingmess.c
     // is message done printing?
     if (gCutsceneMsgIndex == -1) {
         gCutsceneMsgIndex = msgIndex;
@@ -2237,7 +2239,7 @@ void set_cutscene_message(s16 xOffset, s16 yOffset, s16 msgIndex, s16 msgDuratio
     }
 }
 
-void do_cutscene_handler(void) {
+void do_cutscene_handler(void) { // EndingDemoMessageEvent in ultramario\endingmess.c
     s16 x;
 
     // is a cutscene playing? do not perform this handler's actions if so.
@@ -2316,7 +2318,7 @@ void do_cutscene_handler(void) {
 #endif
 
 // "Dear Mario" message handler
-void print_peach_letter_message(void) {
+void print_peach_letter_message(void) { // OpeningMessageEvent in ultramario\endingmess.c
     void **dialogTable;
     struct DialogEntry *dialog;
     u8 *str;
@@ -2391,7 +2393,7 @@ void print_peach_letter_message(void) {
  * Renders the cannon reticle when Mario is inside a cannon.
  * Formed by four triangles.
  */
-void render_hud_cannon_reticle(void) {
+void render_hud_cannon_reticle(void) { // CannonSightEvent in ultramario\endingmess.c
     create_dl_translation_matrix(MENU_MTX_PUSH, 160.0f, 120.0f, 0);
 
     gDPSetEnvColor(gDisplayListHead++, 50, 50, 50, 180);
@@ -2417,11 +2419,11 @@ void render_hud_cannon_reticle(void) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
-void reset_red_coins_collected(void) {
+void reset_red_coins_collected(void) { // iwaStageInit in ultramario\pausemess.c
     gRedCoinsCollected = 0;
 }
 
-void change_dialog_camera_angle(void) {
+void change_dialog_camera_angle(void) { // CoursePauseInit in ultramario\pausemess.c
     if (cam_select_alt_mode(0) == CAM_SELECTION_MARIO) {
         gDialogCameraAngleIndex = CAM_SELECTION_MARIO;
     } else {
@@ -2429,7 +2431,7 @@ void change_dialog_camera_angle(void) {
     }
 }
 
-void shade_screen(void) {
+void shade_screen(void) { // DrawPauseBack in ultramario\pausemess.c
     create_dl_translation_matrix(MENU_MTX_PUSH, GFX_DIMENSIONS_FROM_LEFT_EDGE(0), SCREEN_HEIGHT, 0);
 
     // This is a bit weird. It reuses the dialog text box (width 130, height -80),
@@ -2446,7 +2448,7 @@ void shade_screen(void) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
-void print_animated_red_coin(s16 x, s16 y) {
+void print_animated_red_coin(s16 x, s16 y) { // DrawRedCoin in ultramario\pausemess.c
     u32 globalTimer = gGlobalTimer;
 
     create_dl_translation_matrix(MENU_MTX_PUSH, x, y, 0);
@@ -2472,7 +2474,7 @@ void print_animated_red_coin(s16 x, s16 y) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
-void render_pause_red_coins(void) {
+void render_pause_red_coins(void) { // DrawRedCoinNumber in ultramario\pausemess.c
     s8 x;
 
     for (x = 0; x < gRedCoinsCollected; x++) {
@@ -2523,7 +2525,7 @@ u8 gTextCourse[][7] = {
     #define MYSCORE_X         62
 #endif
 
-void render_pause_my_score_coins(void) {
+void render_pause_my_score_coins(void) { //  DrawPauseScene in ultramario\pausemess.c
 #ifdef VERSION_EU
     u8 textMyScore[][10] = {
         { TEXT_MY_SCORE },
@@ -2628,7 +2630,7 @@ void render_pause_my_score_coins(void) {
     #define Y_VAL7 2
 #endif
 
-void render_pause_camera_options(s16 x, s16 y, s8 *index, s16 xIndex) {
+void render_pause_camera_options(s16 x, s16 y, s8 *index, s16 xIndex) { // DrawCameraChange in ultramario\pausemess.c
     UNUSED_CN u8 textLakituMario[] = { TEXT_LAKITU_MARIO };
     UNUSED_CN u8 textLakituStop[] = { TEXT_LAKITU_STOP };
 #ifdef VERSION_EU
@@ -2695,7 +2697,7 @@ void render_pause_camera_options(s16 x, s16 y, s8 *index, s16 xIndex) {
     #define Y_OFFSET2 38
 #endif
 
-void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
+void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) { // DrawContinue in ultramario\pausemess.c
 #ifdef VERSION_EU
     u8 textContinue[][10] = {
         { TEXT_CONTINUE },
@@ -2742,7 +2744,7 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     }
 }
 
-void render_pause_castle_menu_box(s16 x, s16 y) {
+void render_pause_castle_menu_box(s16 x, s16 y) { // DrawScoreWin in ultramario\pausemess.c
     create_dl_translation_matrix(MENU_MTX_PUSH, x - 78, y - 32, 0);
     create_dl_scale_matrix(MENU_MTX_NOPUSH, 1.2f, 0.8f, 1.0f);
     gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 105);
@@ -2761,7 +2763,7 @@ void render_pause_castle_menu_box(s16 x, s16 y) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
-void highlight_last_course_complete_stars(void) {
+void highlight_last_course_complete_stars(void) { // SelectRoomPauseInit in ultramario\pausemess.c
     u8 completedCourseIndex;
 
     if (gLastCompletedCourseNum == COURSE_NONE) {
@@ -2785,7 +2787,7 @@ void highlight_last_course_complete_stars(void) {
     #define PAUSE_X 123
 #endif
 
-void print_hud_pause_colorful_str(void) {
+void print_hud_pause_colorful_str(void) { // DrawOutOfPauseScene in ultramario\pausemess.c
     u8 textPause[] = { TEXT_PAUSE };
 
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
@@ -2796,7 +2798,7 @@ void print_hud_pause_colorful_str(void) {
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
 }
 
-void render_pause_castle_course_stars(s16 x, s16 y, s16 fileIndex, s16 courseIndex) {
+void render_pause_castle_course_stars(s16 x, s16 y, s16 fileIndex, s16 courseIndex) { // DrawScoreStar in ultramario\pausemess.c
     s16 hasStar = 0;
 
 #ifdef VERSION_CN
@@ -2867,7 +2869,7 @@ void render_pause_castle_course_stars(s16 x, s16 y, s16 fileIndex, s16 courseInd
     print_generic_string(x + 14, y + 13, str);
 }
 
-void render_pause_castle_main_strings(s16 x, s16 y) {
+void render_pause_castle_main_strings(s16 x, s16 y) { // DrawPauseScore in ultramario\pausemess.c
 #ifdef VERSION_EU
     void **courseNameTbl;
 #else
@@ -2967,7 +2969,7 @@ s32 gCourseCompleteScreenTimer = 0;
 s32 gCourseCompleteCoins = 0;
 s8 gHudFlash = 0;
 
-s16 render_pause_screen(void) {
+s16 render_pause_screen(void) { // PauseSceneEvent in ultramario\pausemess.c
     s16 index;
 
 #ifdef VERSION_EU
@@ -3081,7 +3083,7 @@ s16 render_pause_screen(void) {
 #define HUD_PRINT_HISCORE         0
 #define HUD_PRINT_CONGRATULATIONS 1
 
-void print_hud_course_complete_string(s8 str) {
+void print_hud_course_complete_string(s8 str) { // SpecialDemo in ultramario\pausemess.c
 #ifdef VERSION_EU
     u8 textHiScore[][15] = {
         { TEXT_HUD_HI_SCORE },
@@ -3112,7 +3114,7 @@ void print_hud_course_complete_string(s8 str) {
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
 }
 
-void print_hud_course_complete_coins(s16 x, s16 y) {
+void print_hud_course_complete_coins(s16 x, s16 y) { // CoinCountDemo in ultramario\pausemess.c
     u8 courseCompleteCoinsStr[4];
     u8 hudTextSymCoin[] = { GLYPH_COIN, GLYPH_SPACE };
     u8 hudTextSymX[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
@@ -3152,7 +3154,7 @@ void print_hud_course_complete_coins(s16 x, s16 y) {
     }
 }
 
-void play_star_fanfare_and_flash_hud(s32 arg, u8 starFlag) {
+void play_star_fanfare_and_flash_hud(s32 arg, u8 starFlag) { // StarGetEffect in ultramario\pausemess.c
     if (gCourseCompleteCoins == gHudDisplay.coins && !(gCurrCourseStarFlags & starFlag) && gHudFlash == 0) {
         play_star_fanfare();
         gHudFlash = arg;
@@ -3179,7 +3181,7 @@ void play_star_fanfare_and_flash_hud(s32 arg, u8 starFlag) {
     #define TXT_CLEAR_X2 TXT_CLEAR_X1 - 2
 #endif
 
-void render_course_complete_lvl_info_and_hud_str(void) {
+void render_course_complete_lvl_info_and_hud_str(void) { // DrawSaveDemo in ultramario\pausemess.c
 #if defined(VERSION_JP)
     u8 textSymStar[] = { GLYPH_STAR, GLYPH_SPACE };
     u8 textCourse[] = { TEXT_COURSE };
@@ -3329,7 +3331,7 @@ void render_course_complete_lvl_info_and_hud_str(void) {
 #ifdef VERSION_EU
 void render_save_confirmation(s16 y, s8 *index, s16 yOffset)
 #else
-void render_save_confirmation(s16 x, s16 y, s8 *index, s16 yOffset)
+void render_save_confirmation(s16 x, s16 y, s8 *index, s16 yOffset) // SaveCheckContinue in ultramario\pausemess.c
 #endif
 {
 #ifdef VERSION_EU
@@ -3374,7 +3376,7 @@ void render_save_confirmation(s16 x, s16 y, s8 *index, s16 yOffset)
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
-s16 render_course_complete_screen(void) {
+s16 render_course_complete_screen(void) { // SaveSceneEvent in ultramario\pausemess.c
     s16 index;
 #ifdef VERSION_EU
     gInGameLanguage = eu_get_language();

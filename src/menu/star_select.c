@@ -56,7 +56,7 @@ static s32 sActSelectorMenuTimer = 0;
  * Act Selector Star Type Loop Action
  * Defines a select type for a star in the act selector.
  */
-void bhv_act_selector_star_type_loop(void) {
+void bhv_act_selector_star_type_loop(void) { // s_select_polystar in ultramario\starselect.c
     switch (gCurrentObject->oStarSelectorType) {
         // If a star is not selected, don't rotate or change size
         case STAR_SELECTOR_NOT_SELECTED:
@@ -88,7 +88,7 @@ void bhv_act_selector_star_type_loop(void) {
 /**
  * Renders the 100 coin star with an special star selector type.
  */
-void render_100_coin_star(u8 stars) {
+void render_100_coin_star(u8 stars) { // HiscoreStarSet in ultramario\starselect.c
     if (stars & (1 << 6)) {
         // If the 100 coin star has been collected, create a new star selector next to the coin score.
         sStarSelectorModels[6] = spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_STAR,
@@ -104,7 +104,7 @@ void render_100_coin_star(u8 stars) {
  * the correct star models, the 100 coin star and also handles
  * checks of what star should be next in sInitSelectedActNum.
  */
-void bhv_act_selector_init(void) {
+void bhv_act_selector_init(void) { // s_CoStarmain_init in ultramario\starselect.c
     s16 i = 0;
     s32 selectorModelIDs[10];
     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
@@ -164,7 +164,7 @@ void bhv_act_selector_init(void) {
  * Also handles 2 star selector types whenever the star is selected
  * or not, the types are defined in bhv_act_selector_star_type_loop.
  */
-void bhv_act_selector_loop(void) {
+void bhv_act_selector_loop(void) { // s_CoStar_main in ultramario\starselect.c
     s8 i;
     u8 starIndexCounter;
     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
@@ -205,7 +205,7 @@ void bhv_act_selector_loop(void) {
  * Print the course number selected with the wood rgba16 course texture.
  */
 #ifdef VERSION_EU
-void print_course_number(s16 language) {
+void print_course_number(s16 language) { // DrawCoursePicture in ultramario\starselect.c
 #else
 void print_course_number(void) {
 #endif
@@ -257,7 +257,7 @@ void print_course_number(void) {
 /**
  * Print act selector strings, some with special checks.
  */
-void print_act_selector_strings(void) {
+void print_act_selector_strings(void) { // StarSelectScene in ultramario\starselect.c
 #ifdef VERSION_EU
     unsigned char myScore[][10] = { {TEXT_MYSCORE}, {TEXT_MY_SCORE_FR}, {TEXT_MY_SCORE_DE} };
 #else
@@ -384,7 +384,7 @@ void print_act_selector_strings(void) {
  *!@bug: This geo function is missing the third param. Harmless in practice due to o32 convention.
  */
 #ifdef AVOID_UB
-Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node, UNUSED void *context)
+Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node, UNUSED void *context) // StarSelectSceneProc in ultramario\starselect.c
 #else
 Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node)
 #endif
@@ -399,7 +399,7 @@ Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node)
  * Initiates act selector values before entering a main course.
  * Also load how much stars a course has, without counting the 100 coin star.
  */
-s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) {
+s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) { // SeStarSelectInitProc in ultramario\starselect.c
     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
 
     sLoadedActNum = 0;
@@ -424,7 +424,7 @@ s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) {
  * Loads act selector button actions with selected act value checks.
  * Also updates objects and returns act number selected after is chosen.
  */
-s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused) {
+s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused) { // SeStarSelectProcess in ultramario\starselect.c
     if (sActSelectorMenuTimer > 10) {
         // If any of these buttons are pressed, play sound and go to course act
 #ifndef VERSION_EU

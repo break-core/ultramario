@@ -56,7 +56,7 @@ static s16 sCameraHUDStatus = CAM_STATUS_NONE;
 /**
  * Renders a rgba16 16x16 glyph texture from a table list.
  */
-void render_hud_tex_lut(s32 x, s32 y, u8 *texture) {
+void render_hud_tex_lut(s32 x, s32 y, u8 *texture) { // Copy16BitTexture in ultramario\gauge.c
     gDPPipeSync(gDisplayListHead++);
     gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, texture);
     gSPDisplayList(gDisplayListHead++, &dl_hud_img_load_tex_block);
@@ -67,7 +67,7 @@ void render_hud_tex_lut(s32 x, s32 y, u8 *texture) {
 /**
  * Renders a rgba16 8x8 glyph texture from a table list.
  */
-void render_hud_small_tex_lut(s32 x, s32 y, u8 *texture) {
+void render_hud_small_tex_lut(s32 x, s32 y, u8 *texture) { // Copy88Texture in ultramario\gauge.c
     gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0,
                 G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD);
     gDPTileSync(gDisplayListHead++);
@@ -85,7 +85,7 @@ void render_hud_small_tex_lut(s32 x, s32 y, u8 *texture) {
 /**
  * Renders power meter health segment texture using a table list.
  */
-void render_power_meter_health_segment(s16 numHealthWedges) {
+void render_power_meter_health_segment(s16 numHealthWedges) { // LoadGaugeTexture in ultramario\gauge.c
     u8 *(*healthLUT)[] = segmented_to_virtual(&power_meter_health_segments_lut);
 
     gDPPipeSync(gDisplayListHead++);
@@ -101,7 +101,7 @@ void render_power_meter_health_segment(s16 numHealthWedges) {
  * Renders power meter display lists.
  * That includes the "POWER" base and the colored health segment textures.
  */
-void render_dl_power_meter(s16 numHealthWedges) {
+void render_dl_power_meter(s16 numHealthWedges) { // DrawDamegeGage in ultramario\gauge.c
     Mtx *mtx = alloc_display_list(sizeof(Mtx));
 
     if (mtx == NULL) {
@@ -127,7 +127,7 @@ void render_dl_power_meter(s16 numHealthWedges) {
  * Power meter animation called when there's less than 8 health segments
  * Checks its timer to later change into deemphasizing mode.
  */
-void animate_power_meter_emphasized(void) {
+void animate_power_meter_emphasized(void) { // GaugeOpen in ultramario\gauge.c
     s16 hudDisplayFlags = gHudDisplay.flags;
 
     if (!(hudDisplayFlags & HUD_DISPLAY_FLAG_EMPHASIZE_POWER)) {
@@ -143,7 +143,7 @@ void animate_power_meter_emphasized(void) {
  * Power meter animation called after emphasized mode.
  * Moves power meter y pos speed until it's at 200 to be visible.
  */
-static void animate_power_meter_deemphasizing(void) {
+static void animate_power_meter_deemphasizing(void) { // GaugeUp in ultramario\gauge.c
     s16 speed = 5;
 
     if (sPowerMeterHUD.y > 180) {
@@ -170,7 +170,7 @@ static void animate_power_meter_deemphasizing(void) {
  * Power meter animation called when there's 8 health segments.
  * Moves power meter y pos quickly until it's at 301 to be hidden.
  */
-static void animate_power_meter_hiding(void) {
+static void animate_power_meter_hiding(void) { // GaugeClose in ultramario\gauge.c
     sPowerMeterHUD.y += 20;
     if (sPowerMeterHUD.y > 300) {
         sPowerMeterHUD.animation = POWER_METER_HIDDEN;
@@ -181,7 +181,7 @@ static void animate_power_meter_hiding(void) {
 /**
  * Handles power meter actions depending of the health segments values.
  */
-void handle_power_meter_actions(s16 numHealthWedges) {
+void handle_power_meter_actions(s16 numHealthWedges) { // DamegeStateCheck in ultramario\gauge.c
     // Show power meter if health is not full, less than 8
     if (numHealthWedges < 8 && sPowerMeterStoredHealth == 8
         && sPowerMeterHUD.animation == POWER_METER_HIDDEN) {
@@ -218,7 +218,7 @@ void handle_power_meter_actions(s16 numHealthWedges) {
  * or has taken damage and has less than 8 health segments.
  * And calls a power meter animation function depending of the value defined.
  */
-void render_hud_power_meter(void) {
+void render_hud_power_meter(void) { // DamegeGaugeEvent in ultramario\gauge.c
     s16 shownHealthWedges = gHudDisplay.wedges;
 
     if (sPowerMeterHUD.animation != POWER_METER_HIDING) {
@@ -257,7 +257,7 @@ void render_hud_power_meter(void) {
 /**
  * Renders the amount of lives Mario has.
  */
-void render_hud_mario_lives(void) {
+void render_hud_mario_lives(void) { // PlayerLifeEvent in ultramario\gauge.c
     print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), HUD_TOP_Y, ","); // 'Mario Head' glyph
     print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(38), HUD_TOP_Y, "*"); // 'X' glyph
     print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(54), HUD_TOP_Y, "%d", gHudDisplay.lives);
@@ -266,7 +266,7 @@ void render_hud_mario_lives(void) {
 /**
  * Renders the amount of coins collected.
  */
-void render_hud_coins(void) {
+void render_hud_coins(void) { // CoinNumBerEvent in ultramario\gauge.c
     print_text(168, HUD_TOP_Y, "+"); // 'Coin' glyph
     print_text(184, HUD_TOP_Y, "*"); // 'X' glyph
     print_text_fmt_int(198, HUD_TOP_Y, "%d", gHudDisplay.coins);
@@ -282,7 +282,7 @@ void render_hud_coins(void) {
  * Renders the amount of stars collected.
  * Disables "X" glyph when Mario has 100 stars or more.
  */
-void render_hud_stars(void) {
+void render_hud_stars(void) { // StarNumBerEvent in ultramario\gauge.c
     s8 showX = 0;
 
     if (gHudFlash == 1 && gGlobalTimer & 8) {
@@ -305,7 +305,7 @@ void render_hud_stars(void) {
  * Unused function that renders the amount of keys collected.
  * Leftover function from the beta version of the game.
  */
-void render_hud_keys(void) {
+void render_hud_keys(void) { // KeyNumBerEvent in ultramario\gauge.c
     s16 i;
 
     for (i = 0; i < gHudDisplay.keys; i++) {
@@ -316,7 +316,7 @@ void render_hud_keys(void) {
 /**
  * Renders the timer when Mario start sliding in PSS.
  */
-void render_hud_timer(void) {
+void render_hud_timer(void) { // TimerEvent in ultramario\gauge.c
     u8 *(*hudLUT)[58] = segmented_to_virtual(&main_hud_lut);
     u16 timerValFrames = gHudDisplay.timer;
     u16 timerMins = timerValFrames / (30 * 60);
@@ -360,7 +360,7 @@ void render_hud_timer(void) {
  * Sets HUD status camera value depending of the actions
  * defined in update_camera_status.
  */
-void set_hud_camera_status(s16 status) {
+void set_hud_camera_status(s16 status) { // CameraIconSet in ultramario\gauge.c
     sCameraHUDStatus = status;
 }
 
@@ -368,7 +368,7 @@ void set_hud_camera_status(s16 status) {
  * Renders camera HUD glyphs using a table list. Depending on
  * the camera status called, a defined glyph is rendered.
  */
-void render_hud_camera_status(void) {
+void render_hud_camera_status(void) { // CameraIconEvent in ultramario\gauge.c
     u8 *(*cameraLUT)[6] = segmented_to_virtual(&main_hud_camera_lut);
     s32 x = GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(54);
     s32 y = 205;
@@ -408,7 +408,7 @@ void render_hud_camera_status(void) {
  * Render HUD strings using hudDisplayFlags with it's render functions,
  * excluding the cannon reticle which detects a camera preset for it.
  */
-void render_hud(void) {
+void render_hud(void) { // MeterGaugeEvent in ultramario\gauge.c
     s16 hudDisplayFlags = gHudDisplay.flags;
 
     if (hudDisplayFlags == HUD_DISPLAY_NONE) {

@@ -176,7 +176,7 @@ u8 unused1[2] = { 0 };
 s8 sWarpCheckpointActive = FALSE;
 u8 unused2[4];
 
-u16 level_control_timer(s32 timerOp) {
+u16 level_control_timer(s32 timerOp) { // GmStopWatch in ultramario\game.c
     switch (timerOp) {
         case TIMER_CONTROL_SHOW:
             gHudDisplay.flags |= HUD_DISPLAY_FLAG_TIMER;
@@ -202,7 +202,7 @@ u16 level_control_timer(s32 timerOp) {
     return gHudDisplay.timer;
 }
 
-u32 pressed_pause(void) {
+u32 pressed_pause(void) { // CheckPauseRequest in ultramario\game.c
     u32 dialogActive = get_dialog_id() >= 0;
     u32 intangible = (gMarioState->action & ACT_FLAG_INTANGIBLE) != 0;
 
@@ -214,18 +214,18 @@ u32 pressed_pause(void) {
     return FALSE;
 }
 
-void set_play_mode(s16 playMode) {
+void set_play_mode(s16 playMode) { // ChangeProcess in ultramario\game.c
     sCurrPlayMode = playMode;
     D_80339ECA = 0;
 }
 
-void warp_special(s32 arg) {
+void warp_special(s32 arg) { // ChangeExitMode in ultramario\game.c
     sCurrPlayMode = PLAY_MODE_CHANGE_LEVEL;
     D_80339ECA = 0;
     D_80339EE0 = arg;
 }
 
-void fade_into_special_warp(u32 arg, u32 color) {
+void fade_into_special_warp(u32 arg, u32 color) { // PL_ExitGameMode in ultramario\game.c
     if (color != 0) {
         color = 0xFF;
     }
@@ -237,10 +237,10 @@ void fade_into_special_warp(u32 arg, u32 color) {
     warp_special(arg);
 }
 
-void stub_level_update_1(void) {
+void stub_level_update_1(void) { // CheckReset in ultramario\game.c
 }
 
-void load_level_init_text(u32 arg) {
+void load_level_init_text(u32 arg) { // PL_DisplayMessage in ultramario\game.c
     s32 gotAchievement;
     s32 dialogID = gCurrentArea->dialog[arg];
 
@@ -273,7 +273,7 @@ void load_level_init_text(u32 arg) {
     }
 }
 
-void init_door_warp(struct SpawnInfo *spawnInfo, u32 arg1) {
+void init_door_warp(struct SpawnInfo *spawnInfo, u32 arg1) { // MoveToFrontDoor in ultramario\game.c
     if (arg1 & 0x00000002) {
         spawnInfo->startAngle[1] += 0x8000;
     }
@@ -282,7 +282,7 @@ void init_door_warp(struct SpawnInfo *spawnInfo, u32 arg1) {
     spawnInfo->startPos[2] += 300.0f * coss(spawnInfo->startAngle[1]);
 }
 
-void set_mario_initial_cap_powerup(struct MarioState *m) {
+void set_mario_initial_cap_powerup(struct MarioState *m) { // ChangeSpecialCap in ultramario\game.c
     s32 capCourseIndex = gCurrCourseNum - COURSE_CAP_COURSES;
 
     switch (capCourseIndex) {
@@ -303,7 +303,7 @@ void set_mario_initial_cap_powerup(struct MarioState *m) {
     }
 }
 
-void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg) {
+void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg) { // ChangeStatus in ultramario\game.c
     switch (spawnType) {
         case MARIO_SPAWN_DOOR_WARP:
             set_mario_action(m, ACT_WARP_DOOR_SPAWN, actionArg);
@@ -364,7 +364,7 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
     set_mario_initial_cap_powerup(m);
 }
 
-void init_mario_after_warp(void) {
+void init_mario_after_warp(void) { // ChangePort in ultramario\game.c
     struct ObjectWarpNode *spawnNode = area_get_warp_node(sWarpDest.nodeId);
     u32 marioSpawnType = get_mario_spawn_type(spawnNode->object);
 
@@ -460,7 +460,7 @@ void init_mario_after_warp(void) {
 }
 
 // used for warps inside one level
-void warp_area(void) {
+void warp_area(void) { // ChangeScene in ultramario\game.c
     if (sWarpDest.type != WARP_TYPE_NOT_WARPING) {
         if (sWarpDest.type == WARP_TYPE_CHANGE_AREA) {
             level_control_timer(TIMER_CONTROL_HIDE);
@@ -473,7 +473,7 @@ void warp_area(void) {
 }
 
 // used for warps between levels
-void warp_level(void) {
+void warp_level(void) { // ChangeStage in ultramario\game.c
     gCurrLevelNum = sWarpDest.levelNum;
 
     level_control_timer(TIMER_CONTROL_HIDE);
@@ -482,7 +482,7 @@ void warp_level(void) {
     init_mario_after_warp();
 }
 
-void warp_credits(void) {
+void warp_credits(void) { // ChangeEndingStage in ultramario\game.c
     s32 marioAction;
 
     switch (sWarpDest.nodeId) {
@@ -527,7 +527,7 @@ void warp_credits(void) {
     }
 }
 
-void check_instant_warp(void) {
+void check_instant_warp(void) { // CheckSceneConnection in ultramario\game.c
     s16 cameraAngle;
     struct Surface *floor;
 
@@ -564,7 +564,7 @@ void check_instant_warp(void) {
     }
 }
 
-s16 music_changed_through_warp(s16 arg) {
+s16 music_changed_through_warp(s16 arg) { // CheckSameMusic in ultramario\game.c
     struct ObjectWarpNode *warpNode = area_get_warp_node(arg);
     s16 levelNum = warpNode->node.destLevel & 0x7F;
 
@@ -612,7 +612,7 @@ s16 music_changed_through_warp(s16 arg) {
 /**
  * Set the current warp type and destination level/area/node.
  */
-void initiate_warp(s16 destLevel, s16 destArea, s16 destWarpNode, s32 arg3) {
+void initiate_warp(s16 destLevel, s16 destArea, s16 destWarpNode, s32 arg3) { // SetPlayerEntrant in ultramario\game.c
     if (destWarpNode >= WARP_NODE_CREDITS_MIN) {
         sWarpDest.type = WARP_TYPE_CHANGE_LEVEL;
     } else if (destLevel != gCurrLevelNum) {
@@ -638,7 +638,7 @@ void initiate_warp(s16 destLevel, s16 destArea, s16 destWarpNode, s32 arg3) {
  * Check if Mario is above and close to a painting warp floor, and return the
  * corresponding warp node.
  */
-struct WarpNode *get_painting_warp_node(void) {
+struct WarpNode *get_painting_warp_node(void) { // GetBGPortPointer in ultramario\game.c
     struct WarpNode *warpNode = NULL;
     s32 paintingIndex = gMarioState->floor->type - SURFACE_PAINTING_WARP_D3;
 
@@ -655,7 +655,7 @@ struct WarpNode *get_painting_warp_node(void) {
 /**
  * Check is Mario has entered a painting, and if so, initiate a warp.
  */
-void initiate_painting_warp(void) {
+void initiate_painting_warp(void) { // CheckBGPort in ultramario\game.c
     if (gCurrentArea->paintingWarpNodes != NULL && gMarioState->floor != NULL) {
         struct WarpNode warpNode;
         struct WarpNode *pWarpNode = get_painting_warp_node();
@@ -696,7 +696,7 @@ void initiate_painting_warp(void) {
  * based on the warp operation and sometimes Mario's used object.
  * Return the time left until the delayed warp is initiated.
  */
-s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
+s16 level_trigger_warp(struct MarioState *m, s32 warpOp) { // PL_StartFadeout in ultramario\game.c
     s32 val04 = TRUE;
 
     if (sDelayedWarpOp == WARP_OP_NONE) {
@@ -816,7 +816,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
 /**
  * If a delayed warp is ready, initiate it.
  */
-void initiate_delayed_warp(void) {
+void initiate_delayed_warp(void) { // CheckGameFadeout in ultramario\game.c
     struct ObjectWarpNode *warpNode;
     s32 destWarpNode;
 
@@ -885,7 +885,7 @@ void initiate_delayed_warp(void) {
     }
 }
 
-void update_hud_values(void) {
+void update_hud_values(void) { // SetPlayerMeter in ultramario\game.c
     if (gCurrCreditsEntry == NULL) {
         s16 numHealthWedges = gMarioState->health > 0 ? gMarioState->health >> 8 : 0;
 
@@ -950,7 +950,7 @@ void update_hud_values(void) {
  * presumably to allow painting and camera updating while avoiding triggering the
  * warp twice.
  */
-void basic_update(UNUSED s16 *arg) {
+void basic_update(UNUSED s16 *arg) { // ExecuteGame in ultramario\game.c
     area_update_objects();
     update_hud_values();
 
@@ -959,7 +959,7 @@ void basic_update(UNUSED s16 *arg) {
     }
 }
 
-s32 play_mode_normal(void) {
+s32 play_mode_normal(void) { // NormalProcess in ultramario\game.c
     if (gCurrDemoInput != NULL) {
         print_intro_text();
         if (gPlayer1Controller->buttonPressed & END_DEMO) {
@@ -1008,7 +1008,7 @@ s32 play_mode_normal(void) {
     return 0;
 }
 
-s32 play_mode_paused(void) {
+s32 play_mode_paused(void) { // PauseProcess in ultramario\game.c
     if (gMenuOptSelectIndex == MENU_OPT_NONE) {
         set_menu_mode(MENU_MODE_RENDER_PAUSE_SCREEN);
     } else if (gMenuOptSelectIndex == MENU_OPT_DEFAULT) {
@@ -1034,7 +1034,7 @@ s32 play_mode_paused(void) {
  * Debug mode that lets you frame advance by pressing D-pad down. Unfortunately
  * it uses the pause camera, making it basically unusable in most levels.
  */
-s32 play_mode_frame_advance(void) {
+s32 play_mode_frame_advance(void) { // StillProcess in ultramario\game.c
     if (gPlayer1Controller->buttonPressed & D_JPAD) {
         gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
         play_mode_normal();
@@ -1054,7 +1054,7 @@ s32 play_mode_frame_advance(void) {
  * but before it actually occurs. If updateFunction is not NULL, it will be
  * called each frame during the transition.
  */
-void level_set_transition(s16 length, void (*updateFunction)(s16 *)) {
+void level_set_transition(s16 length, void (*updateFunction)(s16 *)) { // FreezeGame in ultramario\game.c
     sTransitionTimer = length;
     sTransitionUpdate = updateFunction;
 }
@@ -1062,7 +1062,7 @@ void level_set_transition(s16 length, void (*updateFunction)(s16 *)) {
 /**
  * Play the transition and then return to normal play mode.
  */
-s32 play_mode_change_area(void) {
+s32 play_mode_change_area(void) { // FreezeProcess in ultramario\game.c
     //! This maybe was supposed to be sTransitionTimer == -1? sTransitionUpdate
     // is never set to -1.
     if (sTransitionUpdate == (void (*)(s16 *)) -1) {
@@ -1086,7 +1086,7 @@ s32 play_mode_change_area(void) {
 /**
  * Play the transition and then return to normal play mode.
  */
-s32 play_mode_change_level(void) {
+s32 play_mode_change_level(void) { // ExitProcess in ultramario\game.c
     if (sTransitionUpdate != NULL) {
         sTransitionUpdate(&sTransitionTimer);
     }
@@ -1109,7 +1109,7 @@ s32 play_mode_change_level(void) {
 /**
  * Unused play mode. Doesn't call transition update and doesn't reset transition at the end.
  */
-UNUSED static s32 play_mode_unused(void) {
+UNUSED static s32 play_mode_unused(void) { // FreezePlayerProcess in ultramario\game.c
     if (--sTransitionTimer == -1) {
         gHudDisplay.flags = HUD_DISPLAY_NONE;
 
@@ -1123,7 +1123,7 @@ UNUSED static s32 play_mode_unused(void) {
     return 0;
 }
 
-s32 update_level(void) {
+s32 update_level(void) { // PlayGame in ultramario\game.c
     s32 changeLevel;
 
     switch (sCurrPlayMode) {
@@ -1152,7 +1152,7 @@ s32 update_level(void) {
     return changeLevel;
 }
 
-s32 init_level(void) {
+s32 init_level(void) { // InitGame in ultramario\game.c
     s32 val4 = FALSE;
 
     set_play_mode(PLAY_MODE_NORMAL);
@@ -1218,7 +1218,7 @@ s32 init_level(void) {
 /**
  * Initialize the current level if initOrUpdate is 0, or update the level if it is 1.
  */
-s32 lvl_init_or_update(s16 initOrUpdate, UNUSED s32 unused) {
+s32 lvl_init_or_update(s16 initOrUpdate, UNUSED s32 unused) { // GameProcess in ultramario\game.c
     s32 result = 0;
 
     switch (initOrUpdate) {
@@ -1233,7 +1233,7 @@ s32 lvl_init_or_update(s16 initOrUpdate, UNUSED s32 unused) {
     return result;
 }
 
-s32 lvl_init_from_save_file(UNUSED s16 arg0, s32 levelNum) {
+s32 lvl_init_from_save_file(UNUSED s16 arg0, s32 levelNum) { // GameInitialize in ultramario\game.c
 #ifdef VERSION_EU
     s16 language = eu_get_language();
     switch (language) {
@@ -1270,7 +1270,7 @@ s32 lvl_init_from_save_file(UNUSED s16 arg0, s32 levelNum) {
     return levelNum;
 }
 
-s32 lvl_set_current_level(UNUSED s16 arg0, s32 levelNum) {
+s32 lvl_set_current_level(UNUSED s16 arg0, s32 levelNum) { // CheckCourseMenu in ultramario\game.c
     s32 warpCheckpointActive = sWarpCheckpointActive;
 
     sWarpCheckpointActive = FALSE;
@@ -1309,7 +1309,7 @@ s32 lvl_set_current_level(UNUSED s16 arg0, s32 levelNum) {
 /**
  * Play the "thank you so much for to playing my game" sound.
  */
-s32 lvl_play_the_end_screen_sound(UNUSED s16 arg0, UNUSED s32 arg1) {
+s32 lvl_play_the_end_screen_sound(UNUSED s16 arg0, UNUSED s32 arg1) { // GameTheEnd in ultramario\game.c
     play_sound(SOUND_MENU_THANK_YOU_PLAYING_MY_GAME, gGlobalSoundSource);
     return 1;
 }
