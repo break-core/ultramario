@@ -26,7 +26,7 @@ struct Surface gWaterSurfacePseudoFloor = {
  * known through stub_mario_step_2 and whether Mario was on it,
  * and if so return a higher value than 0.
  */
-f32 get_additive_y_vel_for_jumps(void) {
+f32 get_additive_y_vel_for_jumps(void) { // PL_GetTrampolinePower in ultramario\physics.c
     return 0.0f;
 }
 
@@ -39,7 +39,7 @@ f32 get_additive_y_vel_for_jumps(void) {
  * this could be used for checking if Mario was on the trampoline.
  * It could, for example, make him bounce.
  */
-void stub_mario_step_1(UNUSED struct MarioState *x) {
+void stub_mario_step_1(UNUSED struct MarioState *x) { // PL_CheckTrampolineJump in ultramario\physics.c
 }
 
 /**
@@ -49,10 +49,10 @@ void stub_mario_step_1(UNUSED struct MarioState *x) {
  * by the trampoline to make itself known to get_additive_y_vel_for_jumps,
  * or to set a variable with its intended additive Y vel.
  */
-void stub_mario_step_2(void) {
+void stub_mario_step_2(void) { // DoTrampoline in ultramario\physics.c
 }
 
-void transfer_bully_speed(struct BullyCollisionData *obj1, struct BullyCollisionData *obj2) {
+void transfer_bully_speed(struct BullyCollisionData *obj1, struct BullyCollisionData *obj2) { // PL_CollideBalls in ultramario\physics.c
     f32 rx = obj2->posX - obj1->posX;
     f32 rz = obj2->posZ - obj1->posZ;
 
@@ -72,7 +72,7 @@ void transfer_bully_speed(struct BullyCollisionData *obj1, struct BullyCollision
 }
 
 BAD_RETURN(s32) init_bully_collision_data(struct BullyCollisionData *data, f32 posX, f32 posZ,
-                               f32 forwardVel, s16 yaw, f32 conversionRatio, f32 radius) {
+                               f32 forwardVel, s16 yaw, f32 conversionRatio, f32 radius) { // PL_SetBallRecord in ultramario\physics.c
     if (forwardVel < 0.0f) {
         forwardVel *= -1.0f;
         yaw += 0x8000;
@@ -86,7 +86,7 @@ BAD_RETURN(s32) init_bully_collision_data(struct BullyCollisionData *data, f32 p
     data->velZ = forwardVel * coss(yaw);
 }
 
-void mario_bonk_reflection(struct MarioState *m, u32 negateSpeed) {
+void mario_bonk_reflection(struct MarioState *m, u32 negateSpeed) { // PL_PlayerRefrection in ultramario\physics.c
     if (m->wall != NULL) {
         s16 wallAngle = atan2s(m->wall->normal.z, m->wall->normal.x);
         m->faceAngle[1] = wallAngle - (s16)(m->faceAngle[1] - wallAngle);
@@ -104,7 +104,7 @@ void mario_bonk_reflection(struct MarioState *m, u32 negateSpeed) {
     }
 }
 
-u32 mario_update_quicksand(struct MarioState *m, f32 sinkingSpeed) {
+u32 mario_update_quicksand(struct MarioState *m, f32 sinkingSpeed) { // PL_CheckPlayerSinking in ultramario\physics.c
     if (m->action & ACT_FLAG_RIDING_SHELL) {
         m->quicksandDepth = 0.0f;
     } else {
@@ -155,7 +155,7 @@ u32 mario_update_quicksand(struct MarioState *m, f32 sinkingSpeed) {
     return FALSE;
 }
 
-u32 mario_push_off_steep_floor(struct MarioState *m, u32 action, u32 actionArg) {
+u32 mario_push_off_steep_floor(struct MarioState *m, u32 action, u32 actionArg) { // PL_FallFromHeavySlope in ultramario\physics.c
     s16 floorDYaw = m->floorAngle - m->faceAngle[1];
 
     if (floorDYaw > -0x4000 && floorDYaw < 0x4000) {
@@ -169,7 +169,7 @@ u32 mario_push_off_steep_floor(struct MarioState *m, u32 action, u32 actionArg) 
     return set_mario_action(m, action, actionArg);
 }
 
-u32 mario_update_moving_sand(struct MarioState *m) {
+u32 mario_update_moving_sand(struct MarioState *m) { // PL_QuicksandProcess in ultramario\physics.c
     struct Surface *floor = m->floor;
     s32 floorType = floor->type;
 
@@ -187,7 +187,7 @@ u32 mario_update_moving_sand(struct MarioState *m) {
     return FALSE;
 }
 
-u32 mario_update_windy_ground(struct MarioState *m) {
+u32 mario_update_windy_ground(struct MarioState *m) { // PL_GustProcess in ultramario\physics.c
     struct Surface *floor = m->floor;
 
     if (floor->type == SURFACE_HORIZONTAL_WIND) {
@@ -220,7 +220,7 @@ u32 mario_update_windy_ground(struct MarioState *m) {
     return FALSE;
 }
 
-void stop_and_set_height_to_floor(struct MarioState *m) {
+void stop_and_set_height_to_floor(struct MarioState *m) { // PL_StopProcess in ultramario\physics.c
     struct Object *marioObj = m->marioObj;
 
     mario_set_forward_vel(m, 0.0f);
@@ -233,7 +233,7 @@ void stop_and_set_height_to_floor(struct MarioState *m) {
     vec3s_set(marioObj->header.gfx.angle, 0, m->faceAngle[1], 0);
 }
 
-s32 stationary_ground_step(struct MarioState *m) {
+s32 stationary_ground_step(struct MarioState *m) { // PL_WaitProcess in ultramario\physics.c
     u32 takeStep;
     struct Object *marioObj = m->marioObj;
     u32 stepResult = GROUND_STEP_NONE;
