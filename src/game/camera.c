@@ -5571,7 +5571,7 @@ void set_camera_mode_radial(struct Camera *c, s16 transitionTime) {
 /**
  * Start parallel tracking mode using the path `path`
  */
-void parallel_tracking_init(struct Camera *c, struct ParallelTrackingPoint *path) {
+void parallel_tracking_init(struct Camera *c, struct ParallelTrackingPoint *path) { // Crou_InitRailCamera
     if (c->mode != CAMERA_MODE_PARALLEL_TRACKING) {
         sParTrackPath = path;
         sParTrackIndex = 0;
@@ -6826,7 +6826,7 @@ s32 rotate_camera_around_walls(struct Camera *c, Vec3f cPos, s16 *avoidYaw, s16 
  *
  * Note: Also finds the water level, but waterHeight is unused
  */
-void find_mario_floor_and_ceil(struct PlayerGeometry *pg) {
+void find_mario_floor_and_ceil(struct PlayerGeometry *pg) { // Crou_marioBG
     struct Surface *surf;
     s16 tempCheckingSurfaceCollisionsForCamera = gCheckingSurfaceCollisionsForCamera;
     gCheckingSurfaceCollisionsForCamera = TRUE;

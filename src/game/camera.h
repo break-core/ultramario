@@ -295,7 +295,7 @@
 /**
  * A copy of player information that is relevant to the camera.
  */
-struct PlayerCameraState {
+struct PlayerCameraState { // CamPLInfo, *CamPLInfoPtr
     /**
      * Mario's action on this frame.
      */
@@ -394,7 +394,7 @@ struct Cutscene {
 /**
  * Info for the camera's field of view and the FOV shake effect.
  */
-struct CameraFOVStatus {
+struct CameraFOVStatus { // ZoomRecord, *ZoomPtr
     /// The current function being used to set the camera's field of view (before any fov shake is applied).
     /*0x00*/ u8 fovFunc;
     /// The current field of view in degrees
@@ -419,7 +419,7 @@ struct CameraFOVStatus {
 /**
  * Information for a control point in a spline segment.
  */
-struct CutsceneSplinePoint {
+struct CutsceneSplinePoint { // SplinedatZ , *SplinedatPtrZ
     /* The index of this point in the spline. Ignored except for -1, which ends the spline.
        An index of -1 should come four points after the start of the last segment. */
     s8 index;
@@ -433,7 +433,7 @@ struct CutsceneSplinePoint {
  * Struct containing the nearest floor and ceiling to the player, as well as the previous floor and
  * ceiling. It also stores their distances from the player's position.
  */
-struct PlayerGeometry {
+struct PlayerGeometry { // C_marioBGInfo ,*C_marioBGInfoPtr
     /*0x00*/ struct Surface *currFloor;
     /*0x04*/ f32 currFloorHeight;
     /*0x08*/ s16 currFloorType;
@@ -453,7 +453,7 @@ struct PlayerGeometry {
 /**
  * Point used in transitioning between camera modes and C-Up.
  */
-struct LinearTransitionPoint {
+struct LinearTransitionPoint { // CamParam
     Vec3f focus;
     Vec3f pos;
     f32 dist;
@@ -464,7 +464,7 @@ struct LinearTransitionPoint {
 /**
  * Info about transitioning between camera modes.
  */
-struct ModeTransitionInfo {
+struct ModeTransitionInfo { // CamMDChange
     s16 newMode;
     s16 lastMode;
     s16 max;
@@ -476,7 +476,7 @@ struct ModeTransitionInfo {
 /**
  * A point in a path used by update_parallel_tracking_camera
  */
-struct ParallelTrackingPoint {
+struct ParallelTrackingPoint { // Raildat , *RaildatPtr
     /// Whether this point is the start of a path
     s16 startOfPath;
     /// Point used to define a line segment to follow
@@ -490,7 +490,7 @@ struct ParallelTrackingPoint {
 /**
  * Stores the camera's info
  */
-struct CameraStoredInfo {
+struct CameraStoredInfo { // Viewbakdat , *ViewbakdatPtr
     /*0x00*/ Vec3f pos;
     /*0x0C*/ Vec3f focus;
     /*0x18*/ f32 panDist;
@@ -502,7 +502,7 @@ struct CameraStoredInfo {
  *
  * See the sCutsceneVars[] array in camera.c for more details.
  */
-struct CutsceneVariable {
+struct CutsceneVariable { // Demodata
     /// Perhaps an index
     s32 unused1;
     Vec3f point;
@@ -517,7 +517,7 @@ struct CutsceneVariable {
  * update_lakitu, its pos and focus are used to calculate lakitu's next position and focus, which are
  * then used to render the game.
  */
-struct Camera {
+struct Camera { // CameraRecord, *CameraPtr
     /*0x00*/ u8 mode; // What type of mode the camera uses (see defines above)
     /*0x01*/ u8 defMode;
     /**
@@ -556,7 +556,7 @@ struct Camera {
  *
  * @see update_lakitu()
  */
-struct LakituState {
+struct LakituState { // CameraBuffer, *CameraBuf
     /**
      * Lakitu's position, which (when CAM_FLAG_SMOOTH_MOVEMENT is set), approaches his goalPos every frame.
      */

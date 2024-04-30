@@ -20,7 +20,7 @@
 #endif
 
 
-struct Controller {
+struct Controller { // Controller
   /*0x00*/ s16 rawStickX;       //
   /*0x02*/ s16 rawStickY;       //
   /*0x04*/ float stickX;        // [-64, 64] positive is right
@@ -65,14 +65,14 @@ enum SpTaskState {
     SPTASK_STATE_FINISHED_DP
 };
 
-struct SPTask {
+struct SPTask { // RSPTask
     /*0x00*/ OSTask task;
     /*0x40*/ OSMesgQueue *msgqueue;
     /*0x44*/ OSMesg msg;
     /*0x48*/ enum SpTaskState state;
 }; // size = 0x4C, align = 0x8
 
-struct VblankHandler {
+struct VblankHandler { // ScClient
     OSMesgQueue *queue;
     OSMesg msg;
 };
@@ -100,7 +100,7 @@ struct Animation {
 
 #define ANIMINDEX_NUMPARTS(animindex) (sizeof(animindex) / sizeof(u16) / 6 - 1)
 
-struct GraphNode {
+struct GraphNode { // MapNode?
     /*0x00*/ s16 type; // structure type
     /*0x02*/ s16 flags; // hi = drawing layer, lo = rendering modes
     /*0x04*/ struct GraphNode *prev;
@@ -218,7 +218,7 @@ struct Waypoint {
     Vec3s pos;
 };
 
-struct Surface {
+struct Surface { // BGCheckData
     /*0x00*/ TerrainData type;
     /*0x02*/ TerrainData force;
     /*0x04*/ s8 flags;
